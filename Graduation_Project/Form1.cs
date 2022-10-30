@@ -20,13 +20,17 @@ namespace Graduation_Project
 
         public Form1()
         {
+            // FALSE INFORMATION, NOT UPDATED
+            myRobot.left_motor_speed = 0;
+            myRobot.right_motor_speed = 0;
+            //
             InitializeComponent();
             // Setup transmission
             myTransmitter.portName = "COM3";
-            myTransmitter.baudRate = 9600;
+            myTransmitter.baudRate = 19200;
             // Setup Robot Server capabilities for Transmitter
             myTransmitter.robotsArray = new Robot[1];
-            myTransmitter.robotsArray.Append(myRobot);
+            myTransmitter.robotsArray[0] = myRobot;
 
             // Starting transmission
             Thread thread = new Thread( 
@@ -34,9 +38,32 @@ namespace Graduation_Project
             thread.IsBackground = true;
             thread.Start();
         }
-        
-        
+        // update values
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            distance_textBox.Text = Convert.ToString(myRobot.distance);
+            xServo_angle_textBox.Text = Convert.ToString(myRobot.xServo_angle);
+            yServo_angle_textBox.Text = Convert.ToString(myRobot.yServo_angle);
+            right_motor_speed_textBox.Text = Convert.ToString(myRobot.right_motor_speed);
+            left_motor_speed_textBox.Text = Convert.ToString(myRobot.left_motor_speed);
+        }
 
+        private void new_servo_angles_button_Click(object sender, EventArgs e)
+        {
+            myRobot.move_sensor_pan(
+                myTransmitter, 
+                Convert.ToInt32(new_xServo_angle_numericUpDown.Value),
+                Convert.ToInt32(new_yServo_angle_numericUpDown.Value)
+                );
+        }
 
+        private void new_wheel_motors_button_Click(object sender, EventArgs e)
+        {
+            myRobot.move_wheels(
+                myTransmitter,
+                Convert.ToInt32(new_right_motor_speed_numericUpDown.Value),
+                Convert.ToInt32(new_left_motor_speed_numericUpDown.Value)
+                );
+        }
     }
 }
