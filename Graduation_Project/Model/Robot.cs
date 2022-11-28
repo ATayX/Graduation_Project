@@ -98,5 +98,33 @@ namespace Graduation_Project.Model
             return padded_val;
         }
         #endregion
+        [Obsolete]
+        public void test_update_from_report_message(string report_message)
+        {
+            try
+            {
+                // report message example RD123S90,90
+                // "D1233"
+                // Get wheel info
+                string wheel_report_str = report_message.Substring(report_message.IndexOf('W') + 1,
+                    (report_message.Length - 1) -  report_message.IndexOf('W'));
+                string[] wheel_values = wheel_report_str.Split(',');
+                right_motor_speed = Convert.ToInt32(wheel_values[0]);
+                left_motor_speed = Convert.ToInt32(wheel_values[1]);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Robot Error: Failed to update robot from report robot arduino message data"
+                    + "\nData corruption might occured along the way of transmission\n" + ex.StackTrace);
+            }
+
+        }
+        [Obsolete]
+        public void test_move_wheels(Transmitter myTransmitter, int new_right_motor_speed, int new_left_motor_speed)
+        {
+            myTransmitter.write_wheel_values(new_right_motor_speed, new_left_motor_speed);
+        }
+
     }
 }

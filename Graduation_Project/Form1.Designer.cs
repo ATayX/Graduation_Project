@@ -52,6 +52,9 @@ namespace Graduation_Project
             this.left_motor_speed_textBox = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.right_motor_speed_textBox = new System.Windows.Forms.TextBox();
+            this.Controller_toggle = new System.Windows.Forms.CheckBox();
+            this.Right_wheel_value = new System.Windows.Forms.Label();
+            this.Left_wheel_value = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.new_xServo_angle_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.new_yServo_angle_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.new_left_motor_speed_numericUpDown)).BeginInit();
@@ -273,11 +276,43 @@ namespace Graduation_Project
             this.right_motor_speed_textBox.Size = new System.Drawing.Size(192, 22);
             this.right_motor_speed_textBox.TabIndex = 21;
             // 
+            // Controller_toggle
+            // 
+            this.Controller_toggle.AutoSize = true;
+            this.Controller_toggle.Location = new System.Drawing.Point(586, 73);
+            this.Controller_toggle.Name = "Controller_toggle";
+            this.Controller_toggle.Size = new System.Drawing.Size(134, 21);
+            this.Controller_toggle.TabIndex = 26;
+            this.Controller_toggle.Text = "Controller_mode";
+            this.Controller_toggle.UseVisualStyleBackColor = true;
+            this.Controller_toggle.CheckedChanged += new System.EventHandler(this.Controller_toggle_CheckedChanged);
+            // 
+            // Right_wheel_value
+            // 
+            this.Right_wheel_value.AutoSize = true;
+            this.Right_wheel_value.Location = new System.Drawing.Point(487, 133);
+            this.Right_wheel_value.Name = "Right_wheel_value";
+            this.Right_wheel_value.Size = new System.Drawing.Size(127, 17);
+            this.Right_wheel_value.TabIndex = 27;
+            this.Right_wheel_value.Text = "Right_wheel_value";
+            // 
+            // Left_wheel_value
+            // 
+            this.Left_wheel_value.AutoSize = true;
+            this.Left_wheel_value.Location = new System.Drawing.Point(634, 133);
+            this.Left_wheel_value.Name = "Left_wheel_value";
+            this.Left_wheel_value.Size = new System.Drawing.Size(118, 17);
+            this.Left_wheel_value.TabIndex = 28;
+            this.Left_wheel_value.Text = "Left_wheel_value";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.Left_wheel_value);
+            this.Controls.Add(this.Right_wheel_value);
+            this.Controls.Add(this.Controller_toggle);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.left_motor_speed_textBox);
             this.Controls.Add(this.label10);
@@ -334,6 +369,9 @@ namespace Graduation_Project
         private System.Windows.Forms.TextBox left_motor_speed_textBox;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox right_motor_speed_textBox;
+        private System.Windows.Forms.CheckBox Controller_toggle;
+        private System.Windows.Forms.Label Right_wheel_value;
+        private System.Windows.Forms.Label Left_wheel_value;
     }
 }
 

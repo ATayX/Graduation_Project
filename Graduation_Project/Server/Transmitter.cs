@@ -14,9 +14,11 @@ namespace Graduation_Project.Server
         private SerialPort serialPort;
         public static bool exit = false;
         public string portName = "COM3"; // default
-        public int baudRate = 19200; // default
+        public int baudRate = 115200; // default
         bool hold_comms = false;
         public Robot[] robotsArray;
+
+        public byte[] Wheels_Buff = new byte[4];
 
         public void Start()
         {
@@ -57,18 +59,18 @@ namespace Graduation_Project.Server
                         {
                             // FIX: can only be used for one robot
                             Console.WriteLine(readData);
-                            robotsArray[0].update_from_report_message(readData);
+                            robotsArray[0].test_update_from_report_message(readData);
                             transmit_recieve_confirmation_flag();
                         }
                         // C = Confirmation
                         else if (readData[0] == 'C')
                         {
-                            Console.WriteLine("Arduino: I recieved this> " + readData);
+                            Console.WriteLine("Arduino: I recieved");
                             hold_comms = false;
                             transmit_recieve_confirmation_flag();
                         }
                     }
-                    Thread.Sleep(200);
+                    Thread.Sleep(10);
                 }
                 #endregion
             }
@@ -87,11 +89,28 @@ namespace Graduation_Project.Server
             // Do handshake to avoid noise
             serialPort.Write("~");
         }
+
         public void transmit_instruction(string instruction)
         {
             hold_comms = true; // hold comms is used to prevent interlocking messages
             // Thread.Sleep(10);
             serialPort.Write(instruction);
+        }
+        public void write_wheel_values(int right_wheel, int left_wheel)
+        {
+            hold_comms = true;
+            serialPort.Write("W");
+            // reset buffer
+            Wheels_Buff = new byte[4];
+            // right wheel
+            if (right_wheel > 0) Wheels_Buff[0] = (byte)right_wheel;
+            else if (right_wheel <= 0) Wheels_Buff[1] = (byte)(right_wheel * -1);
+            // left wheel
+            if (left_wheel > 0) Wheels_Buff[2] = (byte)left_wheel;
+            else if (left_wheel <= 0) Wheels_Buff[3] = (byte)(left_wheel*-1);
+
+            serialPort.Write(Wheels_Buff, 0, 4);
+            hold_comms = false;
         }
         
     }
