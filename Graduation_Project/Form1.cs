@@ -15,8 +15,8 @@ namespace Graduation_Project
 {
     public partial class Form1 : Form
     {
-        int turn_speed = 60;
-        int move_speed = 80;
+        int turn_speed = 100;
+        int move_speed = 150;
 
         int right_wheel = 0;
         int left_wheel = 0;
