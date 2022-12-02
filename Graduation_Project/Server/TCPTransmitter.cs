@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -8,10 +9,11 @@ namespace Graduation_Project.Server
 {
     class TCPTransmitter
     {
-        int HostPort = 4998;
-        string Host = "192.168.1.105";
-        static System.Net.Sockets.TcpClient client = new System.Net.Sockets.TcpClient();
-        NetworkStream ns = client.GetStream();
+        int HostPort = 8000;
+        string Host = "192.168.137.14";
+        static TcpClient client = new TcpClient();
+
+        NetworkStream ns;
 
         public static bool exit = false;
         bool hold_comms = false;
@@ -24,6 +26,9 @@ namespace Graduation_Project.Server
         {
             try
             {
+                client.Connect(Host, HostPort);
+                ns = client.GetStream();
+
                 while (exit == false)
                 {
                     byte[] buffer = new byte[1024];

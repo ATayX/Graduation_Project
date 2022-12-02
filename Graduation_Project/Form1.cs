@@ -28,6 +28,7 @@ namespace Graduation_Project
 
         Robot myRobot = new Robot();
         Transmitter myTransmitter = new Transmitter();
+        TCPTransmitter myTCPTransmitter = new TCPTransmitter();
 
         public Form1()
         {
