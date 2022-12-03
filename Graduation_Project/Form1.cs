@@ -95,8 +95,8 @@ namespace Graduation_Project
             {
                 if (e == false) // if click is new
                 {
-                    right_wheel += move_speed;
-                    left_wheel -= move_speed;
+                    right_wheel += turn_speed;
+                    left_wheel -= turn_speed;
                 }
                 e = true;
             }
@@ -104,8 +104,8 @@ namespace Graduation_Project
             {
                 if (q == false) // if click is new
                 {
-                    right_wheel += move_speed;
-                    left_wheel -= move_speed;
+                    right_wheel += turn_speed;
+                    left_wheel -= turn_speed;
                 }
                 q = true;
             }
@@ -149,8 +149,8 @@ namespace Graduation_Project
             {
                 if (e == true) // if click is new
                 {
-                    right_wheel -= move_speed;
-                    left_wheel += move_speed;
+                    right_wheel -= turn_speed;
+                    left_wheel += turn_speed;
                 }
                 e = false;
             }
@@ -158,8 +158,8 @@ namespace Graduation_Project
             {
                 if (q == true) // if click is new
                 {
-                    right_wheel -= move_speed;
-                    left_wheel += move_speed;
+                    right_wheel -= turn_speed;
+                    left_wheel += turn_speed;
                 }
                 q = false;
             }
