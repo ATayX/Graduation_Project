@@ -28,6 +28,8 @@ namespace Graduation_Project
         bool d = false;
         bool e = false;
         bool q = false;
+        bool z = false;
+        bool c = false;
 
         Robot myRobot = new Robot();
         TCPTransmitter myTCPTransmitter = new TCPTransmitter();
@@ -104,12 +106,27 @@ namespace Graduation_Project
             {
                 if (q == false) // if click is new
                 {
-                    right_wheel += turn_speed;
-                    left_wheel -= turn_speed;
+                    right_wheel -= turn_speed;
+                    left_wheel += turn_speed;
                 }
                 q = true;
             }
-
+            if (er.KeyCode == Keys.Z)
+            {
+                if (z == false) // if click is new
+                {
+                    left_wheel -= turn_speed;
+                }
+                z = true;
+            }
+            if (er.KeyCode == Keys.C)
+            {
+                if (c == false) // if click is new
+                {
+                    right_wheel -= turn_speed;
+                }
+                c = true;
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs er)
@@ -158,12 +175,27 @@ namespace Graduation_Project
             {
                 if (q == true) // if click is new
                 {
-                    right_wheel -= turn_speed;
-                    left_wheel += turn_speed;
+                    right_wheel += turn_speed;
+                    left_wheel -= turn_speed;
                 }
                 q = false;
             }
-
+            if (er.KeyCode == Keys.Z)
+            {
+                if (z == true) // if click is new
+                {
+                    left_wheel += turn_speed;
+                }
+                z = false;
+            }
+            if (er.KeyCode == Keys.C)
+            {
+                if (c == true) // if click is new
+                {
+                    right_wheel += turn_speed;
+                }
+                c = false;
+            }
         }
 
         #endregion
