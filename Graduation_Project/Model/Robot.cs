@@ -61,18 +61,7 @@ namespace Graduation_Project.Model
                 myTransmitter.transmit_instruction(instruction);
             }
         }
-        public void move_sensor_pan(Transmitter myTransmitter, int new_xServo_angle, int new_yServo_angle)
-        {
-            // adding instruction identifier
-            string instruction = "I";
-            // adding instruction specifier + values
-            instruction += "W" + parse_value(right_motor_speed) +
-                "," + parse_value(left_motor_speed) +
-                "S" + padded_3digit(Convert.ToString(new_xServo_angle)) +
-                "," + padded_3digit(Convert.ToString(new_yServo_angle));
-            Console.WriteLine(instruction);
-            myTransmitter.transmit_instruction(instruction);
-        }
+        
         #region parse functions
         private string parse_value(int val)
         {
@@ -99,18 +88,13 @@ namespace Graduation_Project.Model
         }
         #endregion
         [Obsolete]
-        public void test_update_from_report_message(string report_message)
+        public void test_update_from_report_message(int val1, int val2, int val3, int val4)
         {
             try
             {
-                // report message example RD123S90,90
-                // "D1233"
-                // Get wheel info
-                string wheel_report_str = report_message.Substring(report_message.IndexOf('W') + 1,
-                    (report_message.Length - 1) -  report_message.IndexOf('W'));
-                string[] wheel_values = wheel_report_str.Split(',');
-                right_motor_speed = Convert.ToInt32(wheel_values[0]);
-                left_motor_speed = Convert.ToInt32(wheel_values[1]);
+                right_motor_speed = val1 - val2;
+                left_motor_speed = val3 - val4;
+                Console.WriteLine(right_motor_speed.ToString() + left_motor_speed.ToString());
 
             }
             catch (Exception ex)
@@ -121,9 +105,9 @@ namespace Graduation_Project.Model
 
         }
         [Obsolete]
-        public void test_move_wheels(Transmitter myTransmitter, int new_right_motor_speed, int new_left_motor_speed)
+        public void test_move_wheels(TCPTransmitter myTCPTransmitter, int new_right_motor_speed, int new_left_motor_speed)
         {
-            myTransmitter.write_wheel_values(new_right_motor_speed, new_left_motor_speed);
+            myTCPTransmitter.write_wheel_values(new_right_motor_speed, new_left_motor_speed);
         }
 
     }

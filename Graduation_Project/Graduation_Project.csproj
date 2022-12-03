@@ -53,6 +53,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Robot.cs" />
+    <Compile Include="Server\TCPTransmission_P2.cs" />
     <Compile Include="Server\TCPTransmitter.cs" />
     <Compile Include="Server\Transmitter.cs" />
     <Compile Include="Program.cs" />
