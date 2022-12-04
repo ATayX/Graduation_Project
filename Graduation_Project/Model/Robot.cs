@@ -11,52 +11,6 @@ namespace Graduation_Project.Model
         public int right_motor_speed { set; get; }
         public int left_motor_speed { set; get; }
 
-        public void update_from_report_message(string report_message)
-        {
-            try
-            {
-                // report message example RD123S90,90
-                // "D1233"
-                // get ultrasonic distance info
-                string distance_str = report_message.Substring(report_message.IndexOf('D') + 1,
-                    (report_message.IndexOf('W') - 1) - report_message.IndexOf('D'));
-                distance = Convert.ToInt32(distance_str);
-                // Get wheel info
-                string wheel_report_str = report_message.Substring(report_message.IndexOf('W') + 1,
-                    (report_message.IndexOf('S') - 1) - report_message.IndexOf('W'));
-                string[] wheel_values = wheel_report_str.Split(',');
-                right_motor_speed = Convert.ToInt32(wheel_values[0]);
-                left_motor_speed = Convert.ToInt32(wheel_values[1]);
-                // Get unltrasonic pan servo info
-                string servo_report_str = report_message.Substring(report_message.IndexOf('S') + 1,
-                    (report_message.Length - 1) - report_message.IndexOf('S'));
-                string[] servo_values = servo_report_str.Split(',');
-                xServo_angle = Convert.ToInt32(servo_values[0]);
-                yServo_angle = Convert.ToInt32(servo_values[1]);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Robot Error: Failed to update robot from report robot arduino message data" 
-                    + "\nData corruption might occured along the way of transmission\n" + ex.StackTrace);
-            }
-
-        }
-        public void move_wheels(USBTransmitter myTransmitter, int new_right_motor_speed, int new_left_motor_speed)
-        {
-            if ((-255 <= new_right_motor_speed && new_right_motor_speed <= 255) && (-255 <= new_left_motor_speed && new_left_motor_speed <= 255))
-            {
-                // if less than 0 incriment '-' then add padded absolute of Value
-                // adding instruction identifier
-                string instruction = "I";
-                // adding instruction specifier + values
-                instruction += "W" + parse_value(new_right_motor_speed) + 
-                    "," + parse_value(new_left_motor_speed) +
-                    "S" + padded_3digit(Convert.ToString(xServo_angle)) + 
-                    "," + padded_3digit(Convert.ToString(yServo_angle));
-                Console.WriteLine(instruction);
-                myTransmitter.transmit_instruction(instruction);
-            }
-        }
         
         #region parse functions
         private string parse_value(int val)
@@ -83,8 +37,7 @@ namespace Graduation_Project.Model
             return padded_val;
         }
         #endregion
-        [Obsolete]
-        public void test_update_from_report_message(int val1, int val2, int val3, int val4)
+        public void update_from_report_message(int val1, int val2, int val3, int val4)
         {
             try
             {
@@ -100,8 +53,7 @@ namespace Graduation_Project.Model
             }
 
         }
-        [Obsolete]
-        public void test_move_wheels(TCPTransmitter myTCPTransmitter, int new_right_motor_speed, int new_left_motor_speed)
+        public void move_wheels(TCPTransmitter myTCPTransmitter, int new_right_motor_speed, int new_left_motor_speed)
         {
             myTCPTransmitter.write_wheel_values(new_right_motor_speed, new_left_motor_speed);
         }

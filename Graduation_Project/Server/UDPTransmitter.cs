@@ -39,6 +39,7 @@ namespace Graduation_Project.Server
                 byte[] buffer; // data buffer
                 while (exit == false)
                 {
+                    live_feed_client.Connect(ep);
                     buffer = new byte[1024]; // clear buffer
                     if (live_feed_client.Available >= 1) 
                     {
@@ -91,7 +92,7 @@ namespace Graduation_Project.Server
                 int val2 = message_buffer[3];
                 int val3 = message_buffer[4];
                 int val4 = message_buffer[5];
-                robotsArray[0].test_update_from_report_message(val1, val2, val3, val4);
+                robotsArray[0].update_from_report_message(val1, val2, val3, val4);
             }
             catch(Exception ex)
             {

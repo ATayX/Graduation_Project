@@ -210,7 +210,7 @@ namespace Graduation_Project
                 (myRobot.left_motor_speed != left_wheel 
                 ||
                 myRobot.right_motor_speed != right_wheel) 
-                ) myRobot.test_move_wheels(
+                ) myRobot.move_wheels(
                     myTCPTransmitter,
                     Convert.ToInt32(right_wheel),
                     Convert.ToInt32(left_wheel)
@@ -224,7 +224,7 @@ namespace Graduation_Project
 
         private void new_wheel_motors_button_Click(object sender, EventArgs e)
         {
-            myRobot.test_move_wheels(
+            myRobot.move_wheels(
                 myTCPTransmitter,
                 Convert.ToInt32(new_right_motor_speed_numericUpDown.Value),
                 Convert.ToInt32(new_left_motor_speed_numericUpDown.Value)
@@ -242,7 +242,7 @@ namespace Graduation_Project
             {
                 right_wheel = 0;
                 left_wheel = 0;
-                myRobot.test_move_wheels(
+                myRobot.move_wheels(
                     myTCPTransmitter,
                     Convert.ToInt32(right_wheel),
                     Convert.ToInt32(left_wheel)

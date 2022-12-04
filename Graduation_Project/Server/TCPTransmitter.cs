@@ -16,24 +16,50 @@ namespace Graduation_Project.Server
         
         public Robot[] robotsArray;
         public byte[] Wheels_Buff = new byte[5];
-        
+        public bool isExit = false;
+
         #region transmitter
         public void Start()
         {
             try
             {
-                client.Connect(HostIP, HostPort);
-                ns = client.GetStream();
+                while (isExit == false)
+                {
+                    // restablish TCP connection if it was lost
+                    Connect();
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Server Error:" + ex.StackTrace);
             }
-            #endregion
+        }
+        #endregion
+        private void Connect()
+        {
+            try
+            {
+                if (client.Connected == false)
+                {
+                    client.Connect(HostIP, HostPort);
+                    ns = client.GetStream();
+                    Console.WriteLine("Connection to robot established! ");
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("No Connection: Cannot Establish TCP connection and thus UDP will not connect!");
+            }
+         
         }
         public void Close()
         {
-            if (client.Connected) client.Close();
+            if (client.Connected)
+            {
+                client.Close();
+                isExit = true;
+            }
         }
         public void write_wheel_values(int right_wheel, int left_wheel)
         {
