@@ -23,11 +23,8 @@ namespace Graduation_Project.Server
         {
             try
             {
-                while (isExit == false)
-                {
-                    // restablish TCP connection if it was lost
+                // restablish TCP connection if it was lost
                     Connect();
-                }
             }
             catch (Exception ex)
             {
