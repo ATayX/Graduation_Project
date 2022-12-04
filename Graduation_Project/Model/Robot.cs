@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Graduation_Project.Server;
 
 namespace Graduation_Project.Model
@@ -45,7 +41,7 @@ namespace Graduation_Project.Model
             }
 
         }
-        public void move_wheels(Transmitter myTransmitter, int new_right_motor_speed, int new_left_motor_speed)
+        public void move_wheels(USBTransmitter myTransmitter, int new_right_motor_speed, int new_left_motor_speed)
         {
             if ((-255 <= new_right_motor_speed && new_right_motor_speed <= 255) && (-255 <= new_left_motor_speed && new_left_motor_speed <= 255))
             {

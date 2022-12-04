@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Graduation_Project.Model;
 
 namespace Graduation_Project.Server
 {
-    class Transmitter
+    class USBTransmitter
     {
         private SerialPort serialPort;
         public static bool exit = false;

@@ -1,27 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Graduation_Project.Model;
 using Graduation_Project.Server;
 using System.Threading;
-using System.Net;
 
 namespace Graduation_Project
 {
     public partial class Form1 : Form
     {
+        // speed values
         int turn_speed = 100;
         int move_speed = 150;
 
         int right_wheel = 0;
         int left_wheel = 0;
 
+        // keyboard control booleans
         bool w = false;
         bool a = false;
         bool s = false;
@@ -33,7 +27,7 @@ namespace Graduation_Project
 
         Robot myRobot = new Robot();
         TCPTransmitter myTCPTransmitter = new TCPTransmitter();
-        TCPTransmitter_P2 myTCPTransmitter_P2 = new TCPTransmitter_P2();
+        UDPTransmitter myUDPTransmitter = new UDPTransmitter();
 
         public Form1()
         {
@@ -43,8 +37,8 @@ namespace Graduation_Project
             //
             InitializeComponent();
             // Setup Robot Server capabilities for Transmitter
-            myTCPTransmitter_P2.robotsArray = new Robot[1];
-            myTCPTransmitter_P2.robotsArray[0] = myRobot;
+            myUDPTransmitter.robotsArray = new Robot[1];
+            myUDPTransmitter.robotsArray[0] = myRobot;
 
             // Starting transmission
             Thread thread = new Thread(
@@ -52,7 +46,7 @@ namespace Graduation_Project
             thread.IsBackground = true;
             thread.Start();
             Thread thread1 = new Thread( 
-                new ThreadStart(myTCPTransmitter_P2.Start));
+                new ThreadStart(myUDPTransmitter.Start));
             thread1.IsBackground = true;
             thread1.Start();
 

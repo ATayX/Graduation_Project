@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
-using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using Graduation_Project.Model;
 
 namespace Graduation_Project.Server
 {
-    class TCPTransmitter_P2
+    class UDPTransmitter
     {
         public static int HostPort = 8000;
         public static IPAddress HostIP = IPAddress.Parse("192.168.137.14");
@@ -22,7 +16,6 @@ namespace Graduation_Project.Server
         IPEndPoint ep = new IPEndPoint(HostIP, HostPort);
 
         public static bool exit = false;
-        bool hold_comms = false;
 
         public Robot[] robotsArray;
         public byte[] Wheels_Buff = new byte[5];
