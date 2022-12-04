@@ -53,7 +53,7 @@ namespace Graduation_Project.Model
             }
 
         }
-        public void move_wheels(TCPTransmitter myTCPTransmitter, int new_right_motor_speed, int new_left_motor_speed)
+        public void move_wheels(UDPTransmitter2 myTCPTransmitter, int new_right_motor_speed, int new_left_motor_speed)
         {
             myTCPTransmitter.write_wheel_values(new_right_motor_speed, new_left_motor_speed);
         }

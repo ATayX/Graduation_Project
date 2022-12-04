@@ -28,6 +28,7 @@ namespace Graduation_Project
         Robot myRobot = new Robot();
         TCPTransmitter myTCPTransmitter = new TCPTransmitter();
         UDPTransmitter myUDPTransmitter = new UDPTransmitter();
+        UDPTransmitter2 myUDPTransmitter2 = new UDPTransmitter2();
 
         public Form1()
         {
@@ -41,8 +42,12 @@ namespace Graduation_Project
             myUDPTransmitter.robotsArray[0] = myRobot;
 
             // Starting transmission
-            Thread thread = new Thread(
+            Thread thread0 = new Thread(
                 new ThreadStart(myTCPTransmitter.Start));
+            thread0.IsBackground = true;
+            thread0.Start();
+            Thread thread = new Thread(
+                new ThreadStart(myUDPTransmitter2.Start));
             thread.IsBackground = true;
             thread.Start();
             Thread thread1 = new Thread( 
@@ -211,7 +216,7 @@ namespace Graduation_Project
                 ||
                 myRobot.right_motor_speed != right_wheel) 
                 ) myRobot.move_wheels(
-                    myTCPTransmitter,
+                    myUDPTransmitter2,
                     Convert.ToInt32(right_wheel),
                     Convert.ToInt32(left_wheel)
                 );
@@ -225,7 +230,7 @@ namespace Graduation_Project
         private void new_wheel_motors_button_Click(object sender, EventArgs e)
         {
             myRobot.move_wheels(
-                myTCPTransmitter,
+                myUDPTransmitter2,
                 Convert.ToInt32(new_right_motor_speed_numericUpDown.Value),
                 Convert.ToInt32(new_left_motor_speed_numericUpDown.Value)
                 );
@@ -243,7 +248,7 @@ namespace Graduation_Project
                 right_wheel = 0;
                 left_wheel = 0;
                 myRobot.move_wheels(
-                    myTCPTransmitter,
+                    myUDPTransmitter2,
                     Convert.ToInt32(right_wheel),
                     Convert.ToInt32(left_wheel)
                 );
