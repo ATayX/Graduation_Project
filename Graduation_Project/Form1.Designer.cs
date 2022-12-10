@@ -55,6 +55,8 @@ namespace Graduation_Project
             this.Controller_toggle = new System.Windows.Forms.CheckBox();
             this.Right_wheel_value = new System.Windows.Forms.Label();
             this.Left_wheel_value = new System.Windows.Forms.Label();
+            this.scanner_mode = new System.Windows.Forms.CheckBox();
+            this.collisionPreventionToggle = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.new_xServo_angle_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.new_yServo_angle_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.new_left_motor_speed_numericUpDown)).BeginInit();
@@ -135,7 +137,7 @@ namespace Graduation_Project
             // 
             // new_servo_angles_button
             // 
-            this.new_servo_angles_button.Location = new System.Drawing.Point(450, 326);
+            this.new_servo_angles_button.Location = new System.Drawing.Point(403, 328);
             this.new_servo_angles_button.Name = "new_servo_angles_button";
             this.new_servo_angles_button.Size = new System.Drawing.Size(189, 28);
             this.new_servo_angles_button.TabIndex = 12;
@@ -305,11 +307,35 @@ namespace Graduation_Project
             this.Left_wheel_value.TabIndex = 28;
             this.Left_wheel_value.Text = "Left_wheel_value";
             // 
+            // scanner_mode
+            // 
+            this.scanner_mode.AutoSize = true;
+            this.scanner_mode.Location = new System.Drawing.Point(617, 333);
+            this.scanner_mode.Name = "scanner_mode";
+            this.scanner_mode.Size = new System.Drawing.Size(171, 21);
+            this.scanner_mode.TabIndex = 29;
+            this.scanner_mode.Text = "Servo_Scanner_mode";
+            this.scanner_mode.UseVisualStyleBackColor = true;
+            this.scanner_mode.CheckedChanged += new System.EventHandler(this.scanner_mode_CheckedChanged);
+            // 
+            // collisionPreventionToggle
+            // 
+            this.collisionPreventionToggle.AutoSize = true;
+            this.collisionPreventionToggle.Location = new System.Drawing.Point(618, 214);
+            this.collisionPreventionToggle.Name = "collisionPreventionToggle";
+            this.collisionPreventionToggle.Size = new System.Drawing.Size(154, 21);
+            this.collisionPreventionToggle.TabIndex = 30;
+            this.collisionPreventionToggle.Text = "Collision Prevention";
+            this.collisionPreventionToggle.UseVisualStyleBackColor = true;
+            this.collisionPreventionToggle.CheckedChanged += new System.EventHandler(this.collisionPreventionToggle_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.collisionPreventionToggle);
+            this.Controls.Add(this.scanner_mode);
             this.Controls.Add(this.Left_wheel_value);
             this.Controls.Add(this.Right_wheel_value);
             this.Controls.Add(this.Controller_toggle);
@@ -372,6 +398,8 @@ namespace Graduation_Project
         private System.Windows.Forms.CheckBox Controller_toggle;
         private System.Windows.Forms.Label Right_wheel_value;
         private System.Windows.Forms.Label Left_wheel_value;
+        private System.Windows.Forms.CheckBox scanner_mode;
+        private System.Windows.Forms.CheckBox collisionPreventionToggle;
     }
 }
 

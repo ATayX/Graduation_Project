@@ -18,7 +18,6 @@ namespace Graduation_Project.Server
         public static bool exit = false;
 
         public Robot[] robotsArray;
-        public byte[] Wheels_Buff = new byte[5];
 
         // FLAGS
         // setup handshake flag
@@ -88,11 +87,18 @@ namespace Graduation_Project.Server
         {
             try 
             {
-                int val1 = message_buffer[2];
-                int val2 = message_buffer[3];
-                int val3 = message_buffer[4];
-                int val4 = message_buffer[5];
-                robotsArray[0].update_from_report_message(val1, val2, val3, val4);
+                // DC motor values
+                int val1 = Convert.ToInt32(message_buffer[2]); // MOTOR 1 Forward
+                int val2 = Convert.ToInt32(message_buffer[3]); // MOTOR 1 Reverse
+                int val3 = Convert.ToInt32(message_buffer[4]); // MOTOR 2 Forward
+                int val4 = Convert.ToInt32(message_buffer[5]); // MOTOR 2 Reverse
+                // Servo motors values
+                int val5 = Convert.ToInt32(message_buffer[6]); // SERVO 1
+                int val6 = Convert.ToInt32(message_buffer[7]); // SERVO 2
+                // distance values
+                int val7 = Convert.ToInt32(message_buffer[8]); // DISTANCE BYTE1
+                int val8 = Convert.ToInt32(message_buffer[9]); // DISTANCE BYTE2
+                robotsArray[0].update_from_report_message(val1, val2, val3, val4, val5, val6, val7, val8);
             }
             catch(Exception ex)
             {

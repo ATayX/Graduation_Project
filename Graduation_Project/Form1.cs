@@ -8,6 +8,16 @@ namespace Graduation_Project
 {
     public partial class Form1 : Form
     {
+        // servo values
+        int servo_angle_step = 5;
+        static int xServo_center = 84;
+        static int yServo_center = 99;
+
+        int xServo_angle = xServo_center;
+        int yServo_angle = yServo_center;
+
+        bool backwards = false;
+
         // speed values
         int turn_speed = 100;
         int move_speed = 150;
@@ -15,7 +25,7 @@ namespace Graduation_Project
         int right_wheel = 0;
         int left_wheel = 0;
 
-        // keyboard control booleans
+        // keyboard control declarations
         bool w = false;
         bool a = false;
         bool s = false;
@@ -24,7 +34,12 @@ namespace Graduation_Project
         bool q = false;
         bool z = false;
         bool c = false;
-
+        long j_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        long l_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        long i_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        long k_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        long click_delay = 10;
+        
         Robot myRobot = new Robot();
         TCPTransmitter myTCPTransmitter = new TCPTransmitter();
         UDPTransmitter myUDPTransmitter = new UDPTransmitter();
@@ -126,6 +141,30 @@ namespace Graduation_Project
                 }
                 c = true;
             }
+            if (er.KeyCode == Keys.I && DateTimeOffset.Now.ToUnixTimeMilliseconds() >= i_timeStamp + click_delay)
+            {
+                if(yServo_angle < 180 - servo_angle_step) yServo_angle += servo_angle_step;
+                if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
+                i_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            }
+            if (er.KeyCode == Keys.K && DateTimeOffset.Now.ToUnixTimeMilliseconds() >= k_timeStamp + click_delay)
+            {
+                if (yServo_angle > 0 + servo_angle_step) yServo_angle -= servo_angle_step;
+                if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
+                k_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            }
+            if (er.KeyCode == Keys.J && DateTimeOffset.Now.ToUnixTimeMilliseconds() >= j_timeStamp + click_delay)
+            {
+                if (xServo_angle < 180 - servo_angle_step) xServo_angle += servo_angle_step;
+                if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
+                j_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            }
+            if (er.KeyCode == Keys.L && DateTimeOffset.Now.ToUnixTimeMilliseconds() >= l_timeStamp + click_delay)
+            {
+                if (xServo_angle > 0 + servo_angle_step) xServo_angle -= servo_angle_step;
+                if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
+                l_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs er)
@@ -199,44 +238,51 @@ namespace Graduation_Project
 
         #endregion
 
-        #region base_functions
         // update values
         private void timer1_Tick(object sender, EventArgs e)
         {
+            // Servo scan function, SCANS if active
+            if (scanner_mode.Checked) servo_scan_movement();
+            // update motor controller labels
             Left_wheel_value.Text = left_wheel.ToString();
             Right_wheel_value.Text = right_wheel.ToString();
-
+            // UPDATING TEXTBOXES
+            // display distance value
             distance_textBox.Text = Convert.ToString(myRobot.distance);
+            // display servo values
             xServo_angle_textBox.Text = Convert.ToString(myRobot.xServo_angle);
             yServo_angle_textBox.Text = Convert.ToString(myRobot.yServo_angle);
+            // display motor values
             right_motor_speed_textBox.Text = Convert.ToString(myRobot.right_motor_speed);
             left_motor_speed_textBox.Text = Convert.ToString(myRobot.left_motor_speed);
-            if(Controller_toggle.Checked && 
-                (myRobot.left_motor_speed != left_wheel 
+            // display distance
+            distance_textBox.Text = Convert.ToString(myRobot.distance);
+            if (
+                (Controller_toggle.Checked
                 ||
-                myRobot.right_motor_speed != right_wheel) 
-                ) myRobot.move_wheels(
+                scanner_mode.Checked)
+                &&
+                (myRobot.left_motor_speed != left_wheel
+                ||
+                myRobot.right_motor_speed != right_wheel
+                ||
+                myRobot.xServo_angle != xServo_angle
+                ||
+                myRobot.yServo_angle != yServo_angle) // case any value changed
+                ){
+                myRobot.write_values(
                     myUDPTransmitter2,
-                    Convert.ToInt32(right_wheel),
-                    Convert.ToInt32(left_wheel)
+                    right_wheel,
+                    left_wheel,
+                    xServo_angle,
+                    yServo_angle
                 );
-        }
 
-        private void new_servo_angles_button_Click(object sender, EventArgs e)
-        {
+                if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
             
-        }
-
-        private void new_wheel_motors_button_Click(object sender, EventArgs e)
-        {
-            myRobot.move_wheels(
-                myUDPTransmitter2,
-                Convert.ToInt32(new_right_motor_speed_numericUpDown.Value),
-                Convert.ToInt32(new_left_motor_speed_numericUpDown.Value)
-                );
-        }
-        #endregion
-
+                }
+            }
+        
         private void Controller_toggle_CheckedChanged(object sender, EventArgs e)
         {
             if (Controller_toggle.Checked)
@@ -247,13 +293,103 @@ namespace Graduation_Project
             {
                 right_wheel = 0;
                 left_wheel = 0;
-                myRobot.move_wheels(
+                myRobot.write_values(
                     myUDPTransmitter2,
-                    Convert.ToInt32(right_wheel),
-                    Convert.ToInt32(left_wheel)
+                    right_wheel,
+                    left_wheel,
+                    xServo_angle,
+                    yServo_angle
                 );
                 KeyPreview = false;
             }
         }
+
+        #region ClickableButtonsFunctions
+        private void new_servo_angles_button_Click(object sender, EventArgs e)
+        {
+            xServo_angle = Convert.ToInt32(new_xServo_angle_numericUpDown.Value);
+            xServo_angle = Convert.ToInt32(new_yServo_angle_numericUpDown.Value);
+
+            if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
+
+            myRobot.write_values(
+                    myUDPTransmitter2,
+                    right_wheel,
+                    left_wheel,
+                    Convert.ToInt32(new_xServo_angle_numericUpDown.Value),
+                    Convert.ToInt32(new_yServo_angle_numericUpDown.Value)
+                );
+        }
+
+        private void new_wheel_motors_button_Click(object sender, EventArgs e)
+        {
+            myRobot.write_values(
+                    myUDPTransmitter2,
+                    Convert.ToInt32(new_right_motor_speed_numericUpDown.Value),
+                    Convert.ToInt32(new_left_motor_speed_numericUpDown.Value),
+                    xServo_angle,
+                    yServo_angle
+                );
+        }
+        #endregion
+
+        #region scanner_servo
+        private void scanner_mode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (scanner_mode.Checked)
+            {
+                xServo_angle = xServo_center;
+                yServo_angle = yServo_center;
+            }
+            if (scanner_mode.Checked == false)
+            {
+                xServo_angle = xServo_center;
+                yServo_angle = yServo_center;
+            }
+
+            if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
+
+            myRobot.write_values(
+                    myUDPTransmitter2,
+                    right_wheel,
+                    left_wheel,
+                    xServo_angle,
+                    yServo_angle
+                );
+        }
+        private void servo_scan_movement()
+        {
+            if (backwards)
+            {
+                if (xServo_angle <= 1) backwards = false;
+                xServo_angle -= 1;
+            }
+            else
+            {
+                if (xServo_angle >= 179) backwards = true;
+                xServo_angle += 1;
+            }
+
+            if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
+        
+        }
+        #endregion
+
+        #region collision_prevention
+        private void collisionPreventionToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            if (collisionPreventionToggle.Checked == false)
+            {
+                xServo_angle = xServo_center;
+                yServo_angle = yServo_center;
+            }
+        }
+        private void moving_direction_alertness()
+        {
+            if (right_wheel == left_wheel && left_wheel != 0) xServo_angle = xServo_center;
+            else if (right_wheel < left_wheel) xServo_angle = xServo_center + 50; // moving to right side
+            else if (right_wheel > left_wheel) xServo_angle = xServo_center - 50; // moving to left side
+        }
+        #endregion
     }
 }
