@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Graduation_Project.Model;
 using Graduation_Project.Server;
@@ -15,20 +8,27 @@ namespace Graduation_Project
 {
     public partial class Form1 : Form
     {
+        // speed values
         int turn_speed = 100;
         int move_speed = 150;
 
         int right_wheel = 0;
         int left_wheel = 0;
 
+        // keyboard control booleans
         bool w = false;
         bool a = false;
         bool s = false;
         bool d = false;
+        bool e = false;
+        bool q = false;
+        bool z = false;
+        bool c = false;
 
         Robot myRobot = new Robot();
-        Transmitter myTransmitter = new Transmitter();
         TCPTransmitter myTCPTransmitter = new TCPTransmitter();
+        UDPTransmitter myUDPTransmitter = new UDPTransmitter();
+        UDPTransmitter2 myUDPTransmitter2 = new UDPTransmitter2();
 
         public Form1()
         {
@@ -37,29 +37,34 @@ namespace Graduation_Project
             myRobot.right_motor_speed = 0;
             //
             InitializeComponent();
-            // Setup transmission
-            myTransmitter.portName = "COM3";
-            myTransmitter.baudRate = 115200;
             // Setup Robot Server capabilities for Transmitter
-            myTransmitter.robotsArray = new Robot[1];
-            myTransmitter.robotsArray[0] = myRobot;
+            myUDPTransmitter.robotsArray = new Robot[1];
+            myUDPTransmitter.robotsArray[0] = myRobot;
 
             // Starting transmission
-            Thread thread = new Thread( 
-                new ThreadStart(myTransmitter.Start));
+            Thread thread0 = new Thread(
+                new ThreadStart(myTCPTransmitter.Start));
+            thread0.IsBackground = true;
+            thread0.Start();
+            Thread thread = new Thread(
+                new ThreadStart(myUDPTransmitter2.Start));
             thread.IsBackground = true;
             thread.Start();
+            Thread thread1 = new Thread( 
+                new ThreadStart(myUDPTransmitter.Start));
+            thread1.IsBackground = true;
+            thread1.Start();
 
             Controller_toggle.Checked = false;
         }
 
         #region controller_ASWD
-        protected override void OnKeyDown(KeyEventArgs e)
+        protected override void OnKeyDown(KeyEventArgs er)
         {
 
-            base.OnKeyDown(e);
+            base.OnKeyDown(er);
 
-            if (e.KeyCode == Keys.W)
+            if (er.KeyCode == Keys.W)
             {
                 if (w == false) // if click is new
                 {
@@ -68,17 +73,17 @@ namespace Graduation_Project
                 }
                 w = true;
             }
-            if (e.KeyCode == Keys.A)
+            if (er.KeyCode == Keys.A)
             {
                 if (a == false) left_wheel += turn_speed; // if click is new
                 a = true;
             }
-            if (e.KeyCode == Keys.D)
+            if (er.KeyCode == Keys.D)
             {
                 if (d == false) right_wheel += turn_speed; // if click is new
                 d = true;
             }
-            if (e.KeyCode == Keys.S)
+            if (er.KeyCode == Keys.S)
             {
                 if (s == false) // if click is new
                 {
@@ -87,15 +92,48 @@ namespace Graduation_Project
                 }
                 s = true;
             }
-                
+            if (er.KeyCode == Keys.E)
+            {
+                if (e == false) // if click is new
+                {
+                    right_wheel += turn_speed;
+                    left_wheel -= turn_speed;
+                }
+                e = true;
+            }
+            if (er.KeyCode == Keys.Q)
+            {
+                if (q == false) // if click is new
+                {
+                    right_wheel -= turn_speed;
+                    left_wheel += turn_speed;
+                }
+                q = true;
+            }
+            if (er.KeyCode == Keys.Z)
+            {
+                if (z == false) // if click is new
+                {
+                    left_wheel -= turn_speed;
+                }
+                z = true;
+            }
+            if (er.KeyCode == Keys.C)
+            {
+                if (c == false) // if click is new
+                {
+                    right_wheel -= turn_speed;
+                }
+                c = true;
+            }
         }
 
-        protected override void OnKeyUp(KeyEventArgs e)
+        protected override void OnKeyUp(KeyEventArgs er)
         {
 
-            base.OnKeyUp(e);
+            base.OnKeyUp(er);
 
-            if (e.KeyCode == Keys.W)
+            if (er.KeyCode == Keys.W)
             {
                 if (w)
                 {
@@ -104,17 +142,17 @@ namespace Graduation_Project
                 }
                 w = false;
             }
-            if (e.KeyCode == Keys.A)
+            if (er.KeyCode == Keys.A)
             {
                 if (a) left_wheel -= turn_speed;
                 a = false;
             }
-            if (e.KeyCode == Keys.D)
+            if (er.KeyCode == Keys.D)
             {
                 if (d) right_wheel -= turn_speed;
                 d = false;
             }
-            if (e.KeyCode == Keys.S)
+            if (er.KeyCode == Keys.S)
             {
                 if (s)
                 {
@@ -123,7 +161,40 @@ namespace Graduation_Project
                 }
                 s = false;
             }
-                
+            if (er.KeyCode == Keys.E)
+            {
+                if (e == true) // if click is new
+                {
+                    right_wheel -= turn_speed;
+                    left_wheel += turn_speed;
+                }
+                e = false;
+            }
+            if (er.KeyCode == Keys.Q)
+            {
+                if (q == true) // if click is new
+                {
+                    right_wheel += turn_speed;
+                    left_wheel -= turn_speed;
+                }
+                q = false;
+            }
+            if (er.KeyCode == Keys.Z)
+            {
+                if (z == true) // if click is new
+                {
+                    left_wheel += turn_speed;
+                }
+                z = false;
+            }
+            if (er.KeyCode == Keys.C)
+            {
+                if (c == true) // if click is new
+                {
+                    right_wheel += turn_speed;
+                }
+                c = false;
+            }
         }
 
         #endregion
@@ -144,8 +215,8 @@ namespace Graduation_Project
                 (myRobot.left_motor_speed != left_wheel 
                 ||
                 myRobot.right_motor_speed != right_wheel) 
-                ) myRobot.test_move_wheels(
-                    myTransmitter,
+                ) myRobot.move_wheels(
+                    myUDPTransmitter2,
                     Convert.ToInt32(right_wheel),
                     Convert.ToInt32(left_wheel)
                 );
@@ -153,17 +224,13 @@ namespace Graduation_Project
 
         private void new_servo_angles_button_Click(object sender, EventArgs e)
         {
-            myRobot.move_sensor_pan(
-                myTransmitter, 
-                Convert.ToInt32(new_xServo_angle_numericUpDown.Value),
-                Convert.ToInt32(new_yServo_angle_numericUpDown.Value)
-                );
+            
         }
 
         private void new_wheel_motors_button_Click(object sender, EventArgs e)
         {
-            myRobot.test_move_wheels(
-                myTransmitter,
+            myRobot.move_wheels(
+                myUDPTransmitter2,
                 Convert.ToInt32(new_right_motor_speed_numericUpDown.Value),
                 Convert.ToInt32(new_left_motor_speed_numericUpDown.Value)
                 );
@@ -180,8 +247,8 @@ namespace Graduation_Project
             {
                 right_wheel = 0;
                 left_wheel = 0;
-                myRobot.test_move_wheels(
-                    myTransmitter,
+                myRobot.move_wheels(
+                    myUDPTransmitter2,
                     Convert.ToInt32(right_wheel),
                     Convert.ToInt32(left_wheel)
                 );

@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Graduation_Project.Model;
 
 namespace Graduation_Project.Server
 {
-    class Transmitter
+    class USBTransmitter
     {
         private SerialPort serialPort;
         public static bool exit = false;
@@ -59,7 +56,7 @@ namespace Graduation_Project.Server
                         {
                             // FIX: can only be used for one robot
                             Console.WriteLine(readData);
-                            robotsArray[0].test_update_from_report_message(readData);
+                            //robotsArray[0].test_update_from_report_message(readData);
                             transmit_recieve_confirmation_flag();
                         }
                         // C = Confirmation

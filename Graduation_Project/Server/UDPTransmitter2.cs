@@ -1,72 +1,62 @@
 ﻿using System;
+using System.Text;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using Graduation_Project.Model;
 
 namespace Graduation_Project.Server
 {
-    class TCPTransmitter
+    class UDPTransmitter2
     {
-        public int HostPort = 8080;
-        public string HostIP = "192.168.137.14";
-        public TcpClient client = new TcpClient();
+        public static int HostPort = 9000;
+        public static IPAddress HostIP = IPAddress.Parse("192.168.137.14");
 
-        NetworkStream ns;
+        static UdpClient live_feed_client = new UdpClient();
+        IPEndPoint ep = new IPEndPoint(HostIP, HostPort);
 
         public static bool exit = false;
-        
+
         public Robot[] robotsArray;
         public byte[] Wheels_Buff = new byte[5];
-        public bool isExit = false;
+
+        // FLAGS
+        // setup handshake flag
+        byte handshake_signal = Convert.ToByte('~');
+        byte[] handshake_flag_bytes = new byte[1];
 
         #region transmitter
         public void Start()
         {
+
+            handshake_flag_bytes[0] = handshake_signal; // setup flag_signal_bytes
             try
             {
-                // restablish TCP connection if it was lost
-                    Connect();
+                // setup UDP connection
+                live_feed_client.Connect(ep); // connect report client
+
+                byte[] buffer; // data buffer
+                while (exit == false)
+                {
+                    live_feed_client.Connect(ep);
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Server Error:" + ex.StackTrace);
             }
+            #endregion
         }
-        #endregion
-        private void Connect()
-        {
-            try
-            {
-                if (client.Connected == false)
-                {
-                    client.Connect(HostIP, HostPort);
-                    ns = client.GetStream();
-                    Console.WriteLine("Connection to robot established! ");
-                }
-                
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("No Connection: Cannot Establish TCP connection and thus UDP will not connect!");
-            }
-         
-        }
+        
         public void Close()
         {
-            if (client.Connected)
-            {
-                client.Close();
-                isExit = true;
-            }
+            if (live_feed_client.Client.Connected) live_feed_client.Close();
         }
         public void write_wheel_values(int right_wheel, int left_wheel)
         {
             // reset buffer
-            try 
+            try
             {
-
-                // client.Connect(HostIP, HostPort);
-                if (client.Connected) Console.WriteLine("CAN WRITE");
-                
                 Wheels_Buff = new byte[6];
                 Wheels_Buff[0] = Convert.ToByte('W'); // wheel prefix flag
                                                       // right wheel
@@ -76,7 +66,7 @@ namespace Graduation_Project.Server
                 if (left_wheel > 0) Wheels_Buff[3] = (byte)left_wheel;
                 else if (left_wheel <= 0) Wheels_Buff[4] = (byte)(left_wheel * -1);
                 Wheels_Buff[5] = (byte)'E';
-                ns.Write(Wheels_Buff, 0, Wheels_Buff.Length-1);
+                live_feed_client.SendAsync(Wheels_Buff, Wheels_Buff.Length - 1);
             }
             catch (Exception ex)
             {
