@@ -56,6 +56,12 @@ namespace Graduation_Project.Model
                 Console.WriteLine(right_motor_speed.ToString() + "," + left_motor_speed.ToString() + 
                     "," + xServo_angle.ToString() + "," + yServo_angle.ToString() + "," + distance.ToString());
 
+                if (distance == 0)
+                {
+                    Console.WriteLine("distance = 0, switch to a very high value of 1000");
+                    distance = 1000;
+                }
+
             }
             catch (Exception ex)
             {

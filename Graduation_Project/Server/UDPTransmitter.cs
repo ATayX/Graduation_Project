@@ -42,7 +42,7 @@ namespace Graduation_Project.Server
                     buffer = new byte[1024]; // clear buffer
                     if (live_feed_client.Available >= 1) 
                     {
-                        Thread.Sleep(50); // some data is late? The solution worked! some data is late.. Error occured again. increased delay from 5 to 10. 
+                        Thread.Sleep(30); // some data is late? The solution worked! some data is late.. Error occured again. increased delay from 5 to 10. 
                         buffer = new byte[live_feed_client.Available]; // resize buffer
                         buffer = live_feed_client.Receive(ref ep); // read incoming data into buffer
                     }

@@ -8,10 +8,12 @@ namespace Graduation_Project
 {
     public partial class Form1 : Form
     {
+        // distance (ultrasonic sesnor) declarations
+        int obsticleStopDistance = 35; // cm
         // servo values
-        int servo_angle_step = 5;
-        static int xServo_center = 84;
-        static int yServo_center = 99;
+        int servo_angle_step = 5; // degrees
+        static int xServo_center = 84; // degrees
+        static int yServo_center = 99; // degrees
 
         int xServo_angle = xServo_center;
         int yServo_angle = yServo_center;
@@ -19,11 +21,11 @@ namespace Graduation_Project
         bool backwards = false;
 
         // speed values
-        int turn_speed = 100;
-        int move_speed = 150;
+        int turn_speed = 100; // power
+        int move_speed = 150; // power
 
-        int right_wheel = 0;
-        int left_wheel = 0;
+        int right_wheel = 0; // power
+        int left_wheel = 0; // power
 
         // keyboard control declarations
         bool w = false;
@@ -38,8 +40,11 @@ namespace Graduation_Project
         long l_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         long i_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         long k_timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        long click_delay = 10;
-        
+        long click_delay = 10; // microseconds
+
+        // obsticle avoidance declarations
+
+
         Robot myRobot = new Robot();
         TCPTransmitter myTCPTransmitter = new TCPTransmitter();
         UDPTransmitter myUDPTransmitter = new UDPTransmitter();
@@ -47,15 +52,13 @@ namespace Graduation_Project
 
         public Form1()
         {
+            InitializeComponent();
             // FALSE INFORMATION, NOT UPDATED
             myRobot.left_motor_speed = 0;
             myRobot.right_motor_speed = 0;
-            //
-            InitializeComponent();
             // Setup Robot Server capabilities for Transmitter
             myUDPTransmitter.robotsArray = new Robot[1];
             myUDPTransmitter.robotsArray[0] = myRobot;
-
             // Starting transmission
             Thread thread0 = new Thread(
                 new ThreadStart(myTCPTransmitter.Start));
@@ -78,7 +81,6 @@ namespace Graduation_Project
         {
 
             base.OnKeyDown(er);
-
             if (er.KeyCode == Keys.W)
             {
                 if (w == false) // if click is new
@@ -384,11 +386,45 @@ namespace Graduation_Project
                 yServo_angle = yServo_center;
             }
         }
-        private void moving_direction_alertness()
+        private void moving_direction_alertness() // servo pan direction override
         {
-            if (right_wheel == left_wheel && left_wheel != 0) xServo_angle = xServo_center;
-            else if (right_wheel < left_wheel) xServo_angle = xServo_center + 50; // moving to right side
-            else if (right_wheel > left_wheel) xServo_angle = xServo_center - 50; // moving to left side
+            if (right_wheel == left_wheel && left_wheel != 0) // moving stright
+            {
+                xServo_angle = xServo_center;
+                if (myRobot.distance <= obsticleStopDistance
+                    &&
+                    (right_wheel + left_wheel > 0) // case robot is still moving forward
+                    )
+                {
+                    // initiate full stop
+                    right_wheel = 0;
+                    left_wheel = 0;
+                }
+            }
+            else if (right_wheel < left_wheel)
+            {
+                xServo_angle = xServo_center + 50; // moving to right side
+                if (myRobot.distance <= obsticleStopDistance
+                    &&
+                    (left_wheel > right_wheel)) // case robot is still moving right
+                {
+                    // initiate full stop
+                    right_wheel = 0;
+                    left_wheel = 0;
+                }
+            }
+            else if (right_wheel > left_wheel)
+            {
+                xServo_angle = xServo_center - 50; // moving to left side
+                if (myRobot.distance <= obsticleStopDistance
+                    &&
+                    (right_wheel > left_wheel)) // case robot is still moving left
+                {
+                    // initiate full stop
+                    right_wheel = 0;
+                    left_wheel = 0;
+                }
+            }
         }
         #endregion
     }
