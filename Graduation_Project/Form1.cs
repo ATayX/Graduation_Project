@@ -361,7 +361,7 @@ namespace Graduation_Project
                 xServo_angle = xServo_center;
                 if (myRobot.distance <= obsticleStopDistance
                     &&
-                    (right_wheel + left_wheel > 0) // case robot is still moving forward
+                    (w_value + d_value + a_value > 0) // case robot is still moving forward
                     )
                 {
                     // initiate partial stop
@@ -375,7 +375,7 @@ namespace Graduation_Project
                 xServo_angle = xServo_center + 50; // moving to right side
                 if (myRobot.distance <= obsticleStopDistance
                     &&
-                    (left_wheel > right_wheel)) // case robot is still moving right
+                    (w_value + d_value > 0)) // case robot is still moving right
                 {
                     // iniitiate partial stop
                     w_value = 0;
@@ -387,7 +387,7 @@ namespace Graduation_Project
                 xServo_angle = xServo_center - 50; // moving to left side
                 if (myRobot.distance <= obsticleStopDistance
                     &&
-                    (right_wheel > left_wheel)) // case robot is still moving left
+                    (w_value + a_value > 0)) // case robot is still moving left
                 {
                     // initiate full stop
                     w_value = 0;
