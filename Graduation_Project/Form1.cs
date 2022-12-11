@@ -43,6 +43,15 @@ namespace Graduation_Project
         long click_delay = 10; // microseconds
 
         // obsticle avoidance declarations
+        int q_value = 0; // "rightWheel +=", "leftWheel -="
+        int e_value = 0; // "rightWheel -=", "leftWheel +="
+        int w_value = 0; // "rightWheel +=", "leftWheel +="
+        int s_value = 0; // "rightWheel -=", "leftWheel -="
+        int a_value = 0; // "rightWheel +="
+        int d_value = 0; // "leftWheel +="
+        int z_value = 0; // "rightWheel -="
+        int c_value = 0; // "leftWheel -="
+
 
 
         Robot myRobot = new Robot();
@@ -83,64 +92,42 @@ namespace Graduation_Project
             base.OnKeyDown(er);
             if (er.KeyCode == Keys.W)
             {
-                if (w == false) // if click is new
-                {
-                    right_wheel += move_speed;
-                    left_wheel += move_speed;
-                }
+                if (w == false) w_value = move_speed; // if click is new
                 w = true;
             }
             if (er.KeyCode == Keys.A)
             {
-                if (a == false) left_wheel += turn_speed; // if click is new
+                if (a == false) a_value = turn_speed; // if click is new
                 a = true;
             }
             if (er.KeyCode == Keys.D)
             {
-                if (d == false) right_wheel += turn_speed; // if click is new
+                if (d == false) d_value = turn_speed; // if click is new
                 d = true;
             }
             if (er.KeyCode == Keys.S)
             {
-                if (s == false) // if click is new
-                {
-                    right_wheel -= move_speed;
-                    left_wheel -= move_speed;
-                }
+                if (s == false) s_value = move_speed; // if click is new
                 s = true;
             }
             if (er.KeyCode == Keys.E)
             {
-                if (e == false) // if click is new
-                {
-                    right_wheel += turn_speed;
-                    left_wheel -= turn_speed;
-                }
+                if (e == false) e_value = turn_speed; // if click is new
                 e = true;
             }
             if (er.KeyCode == Keys.Q)
             {
-                if (q == false) // if click is new
-                {
-                    right_wheel -= turn_speed;
-                    left_wheel += turn_speed;
-                }
+                if (q == false) q_value = turn_speed; // if click is new
                 q = true;
             }
             if (er.KeyCode == Keys.Z)
             {
-                if (z == false) // if click is new
-                {
-                    left_wheel -= turn_speed;
-                }
+                if (z == false) z_value = turn_speed; // if click is new
                 z = true;
             }
             if (er.KeyCode == Keys.C)
             {
-                if (c == false) // if click is new
-                {
-                    right_wheel -= turn_speed;
-                }
+                if (c == false) c_value = turn_speed; // if click is new
                 c = true;
             }
             if (er.KeyCode == Keys.I && DateTimeOffset.Now.ToUnixTimeMilliseconds() >= i_timeStamp + click_delay)
@@ -176,64 +163,42 @@ namespace Graduation_Project
 
             if (er.KeyCode == Keys.W)
             {
-                if (w)
-                {
-                    right_wheel -= move_speed;
-                    left_wheel -= move_speed;
-                }
+                if (w) w_value = 0;
                 w = false;
             }
             if (er.KeyCode == Keys.A)
             {
-                if (a) left_wheel -= turn_speed;
+                if (a) a_value = 0;
                 a = false;
             }
             if (er.KeyCode == Keys.D)
             {
-                if (d) right_wheel -= turn_speed;
+                if (d) d_value = 0;
                 d = false;
             }
             if (er.KeyCode == Keys.S)
             {
-                if (s)
-                {
-                    right_wheel += move_speed;
-                    left_wheel += move_speed;
-                }
+                if (s) s_value = 0;
                 s = false;
             }
             if (er.KeyCode == Keys.E)
             {
-                if (e == true) // if click is new
-                {
-                    right_wheel -= turn_speed;
-                    left_wheel += turn_speed;
-                }
+                if (e == true) e_value = 0;
                 e = false;
             }
             if (er.KeyCode == Keys.Q)
             {
-                if (q == true) // if click is new
-                {
-                    right_wheel += turn_speed;
-                    left_wheel -= turn_speed;
-                }
+                if (q == true) q_value = 0;
                 q = false;
             }
-            if (er.KeyCode == Keys.Z)
+            if (er.KeyCode == Keys.Z) 
             {
-                if (z == true) // if click is new
-                {
-                    left_wheel += turn_speed;
-                }
+                if (z == true) z_value = 0;
                 z = false;
             }
             if (er.KeyCode == Keys.C)
             {
-                if (c == true) // if click is new
-                {
-                    right_wheel += turn_speed;
-                }
+                if (c == true) c_value = 0;
                 c = false;
             }
         }
@@ -259,6 +224,11 @@ namespace Graduation_Project
             left_motor_speed_textBox.Text = Convert.ToString(myRobot.left_motor_speed);
             // display distance
             distance_textBox.Text = Convert.ToString(myRobot.distance);
+
+
+            // sum keys values
+            sum_motor_keys_vals();
+            // check for collision prevention
             if (
                 (Controller_toggle.Checked
                 ||
@@ -272,6 +242,7 @@ namespace Graduation_Project
                 ||
                 myRobot.yServo_angle != yServo_angle) // case any value changed
                 ){
+                // write values to robot
                 myRobot.write_values(
                     myUDPTransmitter2,
                     right_wheel,
@@ -279,9 +250,6 @@ namespace Graduation_Project
                     xServo_angle,
                     yServo_angle
                 );
-
-                if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
-            
                 }
             }
         
@@ -396,9 +364,10 @@ namespace Graduation_Project
                     (right_wheel + left_wheel > 0) // case robot is still moving forward
                     )
                 {
-                    // initiate full stop
-                    right_wheel = 0;
-                    left_wheel = 0;
+                    // initiate partial stop
+                    w_value = 0;
+                    d_value = 0;
+                    a_value = 0;
                 }
             }
             else if (right_wheel < left_wheel)
@@ -408,9 +377,9 @@ namespace Graduation_Project
                     &&
                     (left_wheel > right_wheel)) // case robot is still moving right
                 {
-                    // initiate full stop
-                    right_wheel = 0;
-                    left_wheel = 0;
+                    // iniitiate partial stop
+                    w_value = 0;
+                    d_value = 0;
                 }
             }
             else if (right_wheel > left_wheel)
@@ -421,11 +390,17 @@ namespace Graduation_Project
                     (right_wheel > left_wheel)) // case robot is still moving left
                 {
                     // initiate full stop
-                    right_wheel = 0;
-                    left_wheel = 0;
+                    w_value = 0;
+                    a_value = 0;
                 }
             }
         }
         #endregion
+        private void sum_motor_keys_vals()
+        {
+            if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
+            right_wheel = q_value - e_value + w_value - s_value + a_value - z_value; // q w e s a z
+            left_wheel = e_value - q_value + w_value - s_value + d_value - c_value; // q w e s d c 
+        }
     }
 }
