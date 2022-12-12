@@ -18,6 +18,7 @@ namespace Graduation_Project
         int xServo_angle = xServo_center;
         int yServo_angle = yServo_center;
 
+
         bool backwards = false;
 
         // speed values
@@ -364,6 +365,7 @@ namespace Graduation_Project
                     (w_value + d_value + a_value > 0) // case robot is still moving forward
                     )
                 {
+
                     // initiate partial stop
                     w_value = 0;
                     d_value = 0;
@@ -372,9 +374,10 @@ namespace Graduation_Project
             }
             else if (right_wheel < left_wheel)
             {
-                xServo_angle = xServo_center + 50; // moving to right side
+                xServo_angle = xServo_center - 50; // moving to right side
                 if (myRobot.distance <= obsticleStopDistance
                     &&
+                    // !!robot still can rotate around itself
                     (w_value + d_value > 0)) // case robot is still moving right
                 {
                     // iniitiate partial stop
@@ -384,9 +387,10 @@ namespace Graduation_Project
             }
             else if (right_wheel > left_wheel)
             {
-                xServo_angle = xServo_center - 50; // moving to left side
+                xServo_angle = xServo_center + 50; // moving to left side
                 if (myRobot.distance <= obsticleStopDistance
                     &&
+                    // !!robot still can rotate around itself
                     (w_value + a_value > 0)) // case robot is still moving left
                 {
                     // initiate full stop
@@ -398,9 +402,12 @@ namespace Graduation_Project
         #endregion
         private void sum_motor_keys_vals()
         {
-            if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
             right_wheel = q_value - e_value + w_value - s_value + a_value - z_value; // q w e s a z
             left_wheel = e_value - q_value + w_value - s_value + d_value - c_value; // q w e s d c 
+            if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
+            right_wheel = q_value - e_value + w_value - s_value + a_value - z_value; // q w e s a z
+            left_wheel = e_value - q_value + w_value - s_value + d_value - c_value; // q w e s d c  
         }
+        
     }
 }
