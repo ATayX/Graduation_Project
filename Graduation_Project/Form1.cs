@@ -402,11 +402,11 @@ namespace Graduation_Project
         #endregion
         private void sum_motor_keys_vals()
         {
-            right_wheel = q_value - e_value + w_value - s_value + a_value - z_value; // q w e s a z
-            left_wheel = e_value - q_value + w_value - s_value + d_value - c_value; // q w e s d c 
+            right_wheel = - q_value + e_value + w_value - s_value + a_value - z_value; // q w e s a z
+            left_wheel = - e_value + q_value + w_value - s_value + d_value - c_value; // q w e s d c 
             if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
-            right_wheel = q_value - e_value + w_value - s_value + a_value - z_value; // q w e s a z
-            left_wheel = e_value - q_value + w_value - s_value + d_value - c_value; // q w e s d c  
+            right_wheel = - q_value + e_value + w_value - s_value + a_value - z_value; // q w e s a z
+            left_wheel = - e_value + q_value + w_value - s_value + d_value - c_value; // q w e s d c  
         }
         
     }
