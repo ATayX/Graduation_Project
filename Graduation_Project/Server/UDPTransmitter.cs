@@ -42,12 +42,13 @@ namespace Graduation_Project.Server
                     buffer = new byte[1024]; // clear buffer
                     if (live_feed_client.Available >= 1) 
                     {
-                        Thread.Sleep(30); // some data is late? The solution worked! some data is late.. Error occured again. increased delay from 5 to 10. 
+                        // no sleep needed for UDP packets //Thread.Sleep(1); // some data is late? The solution worked! some data is late.. Error occured again. increased delay from 5 to 10. 
                         buffer = new byte[live_feed_client.Available]; // resize buffer
                         buffer = live_feed_client.Receive(ref ep); // read incoming data into buffer
                     }
 
                     // read message
+                    readAgain:
                     char received_prefix = Encoding.Default.GetChars(buffer)[0]; // encode byte array into string
                     // use message
                     if (received_prefix != ' ')
@@ -61,6 +62,17 @@ namespace Graduation_Project.Server
                             
                             case 'R': // prefix report
                                 report_message_handler(buffer);
+                                // split colliding(BURST) messages
+                                if (buffer.Length == 15)
+                                {
+                                    buffer = new byte[] { buffer[11], buffer[12], buffer[13], buffer[14] };
+                                    goto readAgain;
+                                }
+                                break;
+
+                            case 'S': // prefix report
+                                Console.WriteLine(buffer);
+                                speed_message_handler(buffer);
                                 break;
 
                             case '\0': // no transmission
@@ -74,7 +86,7 @@ namespace Graduation_Project.Server
                                 break;
                         }
                     }
-                    Thread.Sleep(10);
+                    Thread.Sleep(1);
                 }
             }
             catch (Exception ex)
@@ -105,6 +117,19 @@ namespace Graduation_Project.Server
                 Console.WriteLine("DATA CORRUPTION OCCURED: " + Encoding.Default.GetChars(message_buffer) + "\nError: " + ex);
             }
             send_handshake_flag_signal();
+        }
+        public void speed_message_handler(byte[] message_buffer)
+        {
+            try
+            {
+                int val1 = message_buffer[1];
+                int val2 = message_buffer[2];
+                robotsArray[0].update_from_speed_message(val1, val2);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("SPEED DATA CORRUPTION OCCURED: " + Encoding.Default.GetChars(message_buffer) + "\nError: " + ex);
+            }
         }
         public void Close()
         {

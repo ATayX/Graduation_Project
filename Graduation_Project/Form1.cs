@@ -22,8 +22,9 @@ namespace Graduation_Project
         bool backwards = false;
 
         // speed values
-        int turn_speed = 100; // power
-        int move_speed = 150; // power
+        // UNLOADED default set
+        int turn_pwm = 100; // power
+        int move_pwm = 150; // power
 
         int right_wheel = 0; // power
         int left_wheel = 0; // power
@@ -63,9 +64,11 @@ namespace Graduation_Project
         public Form1()
         {
             InitializeComponent();
+            // enable unloaded pwm
+            unloadedPwmRadioButton.Checked = true;
             // FALSE INFORMATION, NOT UPDATED
-            myRobot.left_motor_speed = 0;
-            myRobot.right_motor_speed = 0;
+            myRobot.left_motor_pwm = 0;
+            myRobot.right_motor_pwm = 0;
             // Setup Robot Server capabilities for Transmitter
             myUDPTransmitter.robotsArray = new Robot[1];
             myUDPTransmitter.robotsArray[0] = myRobot;
@@ -93,42 +96,42 @@ namespace Graduation_Project
             base.OnKeyDown(er);
             if (er.KeyCode == Keys.W)
             {
-                if (w == false) w_value = move_speed; // if click is new
+                if (w == false) w_value = move_pwm; // if click is new
                 w = true;
             }
             if (er.KeyCode == Keys.A)
             {
-                if (a == false) a_value = turn_speed; // if click is new
+                if (a == false) a_value = turn_pwm; // if click is new
                 a = true;
             }
             if (er.KeyCode == Keys.D)
             {
-                if (d == false) d_value = turn_speed; // if click is new
+                if (d == false) d_value = turn_pwm; // if click is new
                 d = true;
             }
             if (er.KeyCode == Keys.S)
             {
-                if (s == false) s_value = move_speed; // if click is new
+                if (s == false) s_value = move_pwm; // if click is new
                 s = true;
             }
             if (er.KeyCode == Keys.E)
             {
-                if (e == false) e_value = turn_speed; // if click is new
+                if (e == false) e_value = turn_pwm; // if click is new
                 e = true;
             }
             if (er.KeyCode == Keys.Q)
             {
-                if (q == false) q_value = turn_speed; // if click is new
+                if (q == false) q_value = turn_pwm; // if click is new
                 q = true;
             }
             if (er.KeyCode == Keys.Z)
             {
-                if (z == false) z_value = turn_speed; // if click is new
+                if (z == false) z_value = turn_pwm; // if click is new
                 z = true;
             }
             if (er.KeyCode == Keys.C)
             {
-                if (c == false) c_value = turn_speed; // if click is new
+                if (c == false) c_value = turn_pwm; // if click is new
                 c = true;
             }
             if (er.KeyCode == Keys.I && DateTimeOffset.Now.ToUnixTimeMilliseconds() >= i_timeStamp + click_delay)
@@ -221,8 +224,11 @@ namespace Graduation_Project
             xServo_angle_textBox.Text = Convert.ToString(myRobot.xServo_angle);
             yServo_angle_textBox.Text = Convert.ToString(myRobot.yServo_angle);
             // display motor values
-            right_motor_speed_textBox.Text = Convert.ToString(myRobot.right_motor_speed);
-            left_motor_speed_textBox.Text = Convert.ToString(myRobot.left_motor_speed);
+            right_motor_pwm_textBox.Text = Convert.ToString(myRobot.right_motor_pwm);
+            left_motor_pwm_textBox.Text = Convert.ToString(myRobot.left_motor_pwm);
+            // display motor line speed
+            right_motor_line_speed_textBox.Text = Convert.ToString(myRobot.right_motor_lines_speed);
+            left_motor_line_speed_textBox.Text = Convert.ToString(myRobot.left_motor_lines_speed);
             // display distance
             distance_textBox.Text = Convert.ToString(myRobot.distance);
 
@@ -235,9 +241,9 @@ namespace Graduation_Project
                 ||
                 scanner_mode.Checked)
                 &&
-                (myRobot.left_motor_speed != left_wheel
+                (myRobot.left_motor_pwm != left_wheel
                 ||
-                myRobot.right_motor_speed != right_wheel
+                myRobot.right_motor_pwm != right_wheel
                 ||
                 myRobot.xServo_angle != xServo_angle
                 ||
@@ -296,8 +302,8 @@ namespace Graduation_Project
         {
             myRobot.write_values(
                     myUDPTransmitter2,
-                    Convert.ToInt32(new_right_motor_speed_numericUpDown.Value),
-                    Convert.ToInt32(new_left_motor_speed_numericUpDown.Value),
+                    Convert.ToInt32(new_right_motor_pwm_numericUpDown.Value),
+                    Convert.ToInt32(new_left_motor_pwm_numericUpDown.Value),
                     xServo_angle,
                     yServo_angle
                 );
@@ -406,8 +412,40 @@ namespace Graduation_Project
             left_wheel = - e_value + q_value + w_value - s_value + d_value - c_value; // q w e s d c 
             if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
             right_wheel = - q_value + e_value + w_value - s_value + a_value - z_value; // q w e s a z
-            left_wheel = - e_value + q_value + w_value - s_value + d_value - c_value; // q w e s d c  
+            left_wheel = - e_value + q_value + w_value - s_value + d_value - c_value; // q w e s d c 
+            if (right_wheel > 255) right_wheel = 255;
+            if (left_wheel > 255) left_wheel = 255;
         }
-        
+        #region PWM Control
+        private void unloadedPwmRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (unloadedPwmRadioButton.Enabled)
+            {
+                // UNLOADED PWM SET
+                turn_pwm = 100; // power
+                move_pwm = 150; // power
+            }
+        }
+
+        private void loadedPwmRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (loadedPwmRadioButton.Enabled)
+            {
+                // LOADED 3-6KG PWM SET
+                turn_pwm = 180; // power
+                move_pwm = 200; // power
+            }
+        }
+
+        private void superLoadedPwmRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (superLoadedPwmRadioButton.Enabled)
+            {
+                // LOADED 3-6KG PWM SET
+                turn_pwm = 255; // power
+                move_pwm = 255; // power
+            }
+        }
+        #endregion
     }
 }
