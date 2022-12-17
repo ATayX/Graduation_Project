@@ -52,12 +52,12 @@ namespace Graduation_Project.Server
         {
             if (live_feed_client.Client.Connected) live_feed_client.Close();
         }
-        public void write_wheel_values(int right_wheel, int left_wheel)
+        public void write_values(int right_wheel, int left_wheel, int Xservo_val, int Yservo_val)
         {
             // reset buffer
             try
             {
-                Wheels_Buff = new byte[6];
+                Wheels_Buff = new byte[8];
                 Wheels_Buff[0] = Convert.ToByte('W'); // wheel prefix flag
                                                       // right wheel
                 if (right_wheel > 0) Wheels_Buff[1] = (byte)right_wheel;
@@ -65,7 +65,9 @@ namespace Graduation_Project.Server
                 // left wheel
                 if (left_wheel > 0) Wheels_Buff[3] = (byte)left_wheel;
                 else if (left_wheel <= 0) Wheels_Buff[4] = (byte)(left_wheel * -1);
-                Wheels_Buff[5] = (byte)'E';
+                Wheels_Buff[5] = (byte)Xservo_val;
+                Wheels_Buff[6] = (byte)Yservo_val;
+                Wheels_Buff[7] = (byte)'E';
                 live_feed_client.SendAsync(Wheels_Buff, Wheels_Buff.Length - 1);
             }
             catch (Exception ex)

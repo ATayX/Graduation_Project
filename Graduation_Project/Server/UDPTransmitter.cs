@@ -18,7 +18,6 @@ namespace Graduation_Project.Server
         public static bool exit = false;
 
         public Robot[] robotsArray;
-        public byte[] Wheels_Buff = new byte[5];
 
         // FLAGS
         // setup handshake flag
@@ -43,12 +42,13 @@ namespace Graduation_Project.Server
                     buffer = new byte[1024]; // clear buffer
                     if (live_feed_client.Available >= 1) 
                     {
-                        Thread.Sleep(50); // some data is late? The solution worked! some data is late.. Error occured again. increased delay from 5 to 10. 
+                        // no sleep needed for UDP packets //Thread.Sleep(1); // some data is late? The solution worked! some data is late.. Error occured again. increased delay from 5 to 10. 
                         buffer = new byte[live_feed_client.Available]; // resize buffer
                         buffer = live_feed_client.Receive(ref ep); // read incoming data into buffer
                     }
 
                     // read message
+                    readAgain:
                     char received_prefix = Encoding.Default.GetChars(buffer)[0]; // encode byte array into string
                     // use message
                     if (received_prefix != ' ')
@@ -62,6 +62,17 @@ namespace Graduation_Project.Server
                             
                             case 'R': // prefix report
                                 report_message_handler(buffer);
+                                // split colliding(BURST) messages
+                                if (buffer.Length == 15)
+                                {
+                                    buffer = new byte[] { buffer[11], buffer[12], buffer[13], buffer[14] };
+                                    goto readAgain;
+                                }
+                                break;
+
+                            case 'S': // prefix report
+                                Console.WriteLine(buffer);
+                                speed_message_handler(buffer);
                                 break;
 
                             case '\0': // no transmission
@@ -75,7 +86,7 @@ namespace Graduation_Project.Server
                                 break;
                         }
                     }
-                    Thread.Sleep(10);
+                    Thread.Sleep(1);
                 }
             }
             catch (Exception ex)
@@ -88,17 +99,37 @@ namespace Graduation_Project.Server
         {
             try 
             {
-                int val1 = message_buffer[2];
-                int val2 = message_buffer[3];
-                int val3 = message_buffer[4];
-                int val4 = message_buffer[5];
-                robotsArray[0].update_from_report_message(val1, val2, val3, val4);
+                // DC motor values
+                int val1 = Convert.ToInt32(message_buffer[2]); // MOTOR 1 Forward
+                int val2 = Convert.ToInt32(message_buffer[3]); // MOTOR 1 Reverse
+                int val3 = Convert.ToInt32(message_buffer[4]); // MOTOR 2 Forward
+                int val4 = Convert.ToInt32(message_buffer[5]); // MOTOR 2 Reverse
+                // Servo motors values
+                int val5 = Convert.ToInt32(message_buffer[6]); // SERVO 1
+                int val6 = Convert.ToInt32(message_buffer[7]); // SERVO 2
+                // distance values
+                int val7 = Convert.ToInt32(message_buffer[8]); // DISTANCE BYTE1
+                int val8 = Convert.ToInt32(message_buffer[9]); // DISTANCE BYTE2
+                robotsArray[0].update_from_report_message(val1, val2, val3, val4, val5, val6, val7, val8);
             }
             catch(Exception ex)
             {
                 Console.WriteLine("DATA CORRUPTION OCCURED: " + Encoding.Default.GetChars(message_buffer) + "\nError: " + ex);
             }
             send_handshake_flag_signal();
+        }
+        public void speed_message_handler(byte[] message_buffer)
+        {
+            try
+            {
+                int val1 = message_buffer[1];
+                int val2 = message_buffer[2];
+                robotsArray[0].update_from_speed_message(val1, val2);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("SPEED DATA CORRUPTION OCCURED: " + Encoding.Default.GetChars(message_buffer) + "\nError: " + ex);
+            }
         }
         public void Close()
         {

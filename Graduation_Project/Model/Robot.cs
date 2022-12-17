@@ -3,15 +3,24 @@ using Graduation_Project.Server;
 
 namespace Graduation_Project.Model
 {
+    /// <summary>
+    /// robot object is a medium between arduino and C# .net
+    /// it takes raw values of a parsed message
+    /// and converts it into UI readables
+    /// 
+    /// one sending instructions it only sends UI readables
+    /// </summary>
     class Robot
     {
-        public int distance { set; get; }
+        public long distance { set; get; }
         public int xServo_angle { set; get; }
         public int yServo_angle { set; get; }
-        public int right_motor_speed { set; get; }
-        public int left_motor_speed { set; get; }
+        public int right_motor_pwm { set; get; }
+        public int left_motor_pwm { set; get; }
+        public int right_motor_lines_speed { set; get; }
+        public int left_motor_lines_speed { set; get; }
 
-        
+
         #region parse functions
         private string parse_value(int val)
         {
@@ -37,13 +46,23 @@ namespace Graduation_Project.Model
             return padded_val;
         }
         #endregion
-        public void update_from_report_message(int val1, int val2, int val3, int val4)
+        public void update_from_report_message(int val1, int val2, int val3, int val4, int val5, int val6, int val7, int val8)
         {
             try
             {
-                right_motor_speed = val1 - val2;
-                left_motor_speed = val3 - val4;
-                Console.WriteLine(right_motor_speed.ToString() + left_motor_speed.ToString());
+                right_motor_pwm = val1 - val2;
+                left_motor_pwm = val3 - val4;
+                xServo_angle = val5;
+                yServo_angle = val6;
+                distance = val7 + val8;
+                Console.WriteLine(right_motor_pwm.ToString() + "," + left_motor_pwm.ToString() + 
+                    "," + xServo_angle.ToString() + "," + yServo_angle.ToString() + "," + distance.ToString());
+
+                if (distance == 0)
+                {
+                    Console.WriteLine("distance = 0, switch to a very high value of 1000");
+                    distance = 1000;
+                }
 
             }
             catch (Exception ex)
@@ -53,9 +72,14 @@ namespace Graduation_Project.Model
             }
 
         }
-        public void move_wheels(UDPTransmitter2 myTCPTransmitter, int new_right_motor_speed, int new_left_motor_speed)
+        public void update_from_speed_message(int motor_A_lines, int motor_B_lines)
         {
-            myTCPTransmitter.write_wheel_values(new_right_motor_speed, new_left_motor_speed);
+            right_motor_lines_speed = motor_A_lines; // per 100 ms
+            left_motor_lines_speed = motor_B_lines; // per 100 ms
+        }
+        public void write_values(UDPTransmitter2 myUDPTransmitter2, int new_right_motor_speed, int new_left_motor_speed, int new_Xservo_angle, int new_Yservo_angle)
+        {
+            myUDPTransmitter2.write_values(new_right_motor_speed, new_left_motor_speed, new_Xservo_angle, new_Yservo_angle);
         }
 
     }
