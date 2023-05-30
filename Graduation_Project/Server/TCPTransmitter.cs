@@ -9,7 +9,7 @@ namespace Graduation_Project.Server
         public int HostPort = 8080;
         public string HostIP = "192.168.137.14";
         public TcpClient client = new TcpClient();
-
+        // "RCAGV01"
         NetworkStream ns;
 
         public static bool exit = false;
