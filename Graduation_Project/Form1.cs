@@ -57,9 +57,8 @@ namespace Graduation_Project
 
 
         Robot myRobot = new Robot();
-        TCPTransmitter myTCPTransmitter = new TCPTransmitter();
-        UDPTransmitter myUDPTransmitter = new UDPTransmitter();
-        UDPTransmitter2 myUDPTransmitter2 = new UDPTransmitter2();
+        UDPReceiver myUDPTransmitter = new UDPReceiver();
+        UDPTransmitter myUDPTransmitter2 = new UDPTransmitter();
 
         public Form1()
         {
@@ -74,9 +73,10 @@ namespace Graduation_Project
             myUDPTransmitter.robotsArray[0] = myRobot;
             // Starting transmission
             Thread thread0 = new Thread(
-                new ThreadStart(myTCPTransmitter.Start));
+                new ThreadStart(TCPServer.Start));
             thread0.IsBackground = true;
             thread0.Start();
+            
             Thread thread = new Thread(
                 new ThreadStart(myUDPTransmitter2.Start));
             thread.IsBackground = true;
@@ -85,6 +85,7 @@ namespace Graduation_Project
                 new ThreadStart(myUDPTransmitter.Start));
             thread1.IsBackground = true;
             thread1.Start();
+            
 
             Controller_toggle.Checked = false;
         }

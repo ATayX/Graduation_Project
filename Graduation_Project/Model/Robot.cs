@@ -77,7 +77,7 @@ namespace Graduation_Project.Model
             right_motor_lines_speed = motor_A_lines; // per 100 ms
             left_motor_lines_speed = motor_B_lines; // per 100 ms
         }
-        public void write_values(UDPTransmitter2 myUDPTransmitter2, int new_right_motor_speed, int new_left_motor_speed, int new_Xservo_angle, int new_Yservo_angle)
+        public void write_values(UDPTransmitter myUDPTransmitter2, int new_right_motor_speed, int new_left_motor_speed, int new_Xservo_angle, int new_Yservo_angle)
         {
             myUDPTransmitter2.write_values(new_right_motor_speed, new_left_motor_speed, new_Xservo_angle, new_Yservo_angle);
         }
