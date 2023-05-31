@@ -9,8 +9,8 @@ namespace Graduation_Project.Server
 {
     class UDPTransmitter
     {
-        public static int HostPort = 9000;
-        public static IPAddress HostIP = IPAddress.Parse("192.168.1.20");
+        public static int HostPort = 61040;
+        public static IPAddress HostIP = IPAddress.Parse("192.168.1.222");
 
         static UdpClient live_feed_client = new UdpClient();
         IPEndPoint ep = new IPEndPoint(HostIP, HostPort);

@@ -23,7 +23,7 @@ namespace Graduation_Project.Server
             {
                 // Start listening for client connections
                 listener.Start();
-                Console.WriteLine("Server started and listening on port {0}", port);
+                Console.WriteLine("TCP Server started and listening on port {0}", port);
 
                 while (true)
                 {
@@ -36,7 +36,7 @@ namespace Graduation_Project.Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: {0}", ex.Message);
+                Console.WriteLine("TCP Error: {0}", ex.Message);
             }
             finally
             {
@@ -53,7 +53,7 @@ namespace Graduation_Project.Server
             IPEndPoint clientEndpoint = (IPEndPoint)client.Client.RemoteEndPoint;
             string clientAddress = clientEndpoint.Address.ToString();
             int clientPort = clientEndpoint.Port;
-            Console.WriteLine("Client connected from {0}:{1}", clientAddress, clientPort);
+            Console.WriteLine("TCP Client connected from {0}:{1}", clientAddress, clientPort);
             /*
             try
             {

@@ -46,7 +46,7 @@ namespace Graduation_Project.Model
             return padded_val;
         }
         #endregion
-        public void update_from_report_message(int val1, int val2, int val3, int val4, int val5, int val6, int val7, int val8)
+        public void update_from_report_message(int val1, int val2, int val3, int val4, int val5, int val6, int val7, int val8, int val9, int val10)
         {
             try
             {
@@ -55,8 +55,11 @@ namespace Graduation_Project.Model
                 xServo_angle = val5;
                 yServo_angle = val6;
                 distance = val7 + val8;
+                right_motor_lines_speed = val9; // per 100 ms
+                left_motor_lines_speed = val10; // per 100 ms
                 Console.WriteLine(right_motor_pwm.ToString() + "," + left_motor_pwm.ToString() + 
-                    "," + xServo_angle.ToString() + "," + yServo_angle.ToString() + "," + distance.ToString());
+                    "," + xServo_angle.ToString() + "," + yServo_angle.ToString() + "," + distance.ToString() 
+                    + "," + right_motor_lines_speed.ToString() + "," + left_motor_lines_speed.ToString());
 
                 if (distance == 0)
                 {
@@ -71,11 +74,6 @@ namespace Graduation_Project.Model
                     + "\nData corruption might occured along the way of transmission\n" + ex.StackTrace);
             }
 
-        }
-        public void update_from_speed_message(int motor_A_lines, int motor_B_lines)
-        {
-            right_motor_lines_speed = motor_A_lines; // per 100 ms
-            left_motor_lines_speed = motor_B_lines; // per 100 ms
         }
         public void write_values(UDPTransmitter myUDPTransmitter2, int new_right_motor_speed, int new_left_motor_speed, int new_Xservo_angle, int new_Yservo_angle)
         {

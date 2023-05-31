@@ -9,8 +9,8 @@ namespace Graduation_Project.Server
 {
     class UDPReceiver
     {
-        public static int HostPort = 8000;
-        public static IPAddress HostIP = IPAddress.Parse("192.168.1.20");
+        public static int HostPort = 61050;
+        public static IPAddress HostIP = IPAddress.Parse("192.168.1.222");
 
         static UdpClient live_feed_client = new UdpClient();
         IPEndPoint ep = new IPEndPoint(HostIP, HostPort);
@@ -24,7 +24,7 @@ namespace Graduation_Project.Server
         byte handshake_signal = Convert.ToByte('~');
         byte[] handshake_flag_bytes = new byte[1];
 
-        #region transmitter
+        #region Receiver
         public void Start()
         {
             
@@ -34,12 +34,11 @@ namespace Graduation_Project.Server
                 // setup UDP connection
                 live_feed_client.Connect(ep); // connect report client
                 send_handshake_flag_signal(); // initiate a handshake
-                byte[] buffer; // data buffer
+                byte[] buffer = new byte[1024]; // data buffer
                 while (exit == false)
                 {
-                    live_feed_client.Connect(ep);
-                    send_handshake_flag_signal(); // initiate a handshake
-                    buffer = new byte[1024]; // clear buffer
+                    //live_feed_client.Connect(ep);
+                    Array.Clear(buffer, 0, buffer.Length); // clear buffer
                     if (live_feed_client.Available >= 1) 
                     {
                         // no sleep needed for UDP packets //Thread.Sleep(1); // some data is late? The solution worked! some data is late.. Error occured again. increased delay from 5 to 10. 
@@ -48,12 +47,11 @@ namespace Graduation_Project.Server
                     }
 
                     // read message
-                    readAgain:
                     char received_prefix = Encoding.Default.GetChars(buffer)[0]; // encode byte array into string
                     // use message
                     if (received_prefix != ' ')
                     {
-                        Console.WriteLine(Encoding.Default.GetChars(buffer));
+                        //Console.WriteLine(Encoding.Default.GetChars(buffer));
                         switch (received_prefix)
                         {
                             case '~': // prefix handshake
@@ -62,22 +60,11 @@ namespace Graduation_Project.Server
                             
                             case 'R': // prefix report
                                 report_message_handler(buffer);
-                                // split colliding(BURST) messages
-                                if (buffer.Length == 15)
-                                {
-                                    buffer = new byte[] { buffer[11], buffer[12], buffer[13], buffer[14] };
-                                    goto readAgain;
-                                }
-                                break;
-
-                            case 'S': // prefix report
-                                Console.WriteLine(buffer);
-                                speed_message_handler(buffer);
                                 break;
 
                             case '\0': // no transmission
                                 //Console.WriteLine("Not connected");
-                                send_handshake_flag_signal(); // recover connection
+                                //send_handshake_flag_signal(); // recover connection
                                 break;
 
                             default:
@@ -110,26 +97,16 @@ namespace Graduation_Project.Server
                 // distance values
                 int val7 = Convert.ToInt32(message_buffer[8]); // DISTANCE BYTE1
                 int val8 = Convert.ToInt32(message_buffer[9]); // DISTANCE BYTE2
-                robotsArray[0].update_from_report_message(val1, val2, val3, val4, val5, val6, val7, val8);
+
+                int val9 = message_buffer[10];
+                int val10 = message_buffer[11];
+                robotsArray[0].update_from_report_message(val1, val2, val3, val4, val5, val6, val7, val8, val9, val10);
             }
             catch(Exception ex)
             {
                 Console.WriteLine("DATA CORRUPTION OCCURED: " + Encoding.Default.GetChars(message_buffer) + "\nError: " + ex);
             }
             send_handshake_flag_signal();
-        }
-        public void speed_message_handler(byte[] message_buffer)
-        {
-            try
-            {
-                int val1 = message_buffer[1];
-                int val2 = message_buffer[2];
-                robotsArray[0].update_from_speed_message(val1, val2);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("SPEED DATA CORRUPTION OCCURED: " + Encoding.Default.GetChars(message_buffer) + "\nError: " + ex);
-            }
         }
         public void Close()
         {
