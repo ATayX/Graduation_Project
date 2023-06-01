@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Graduation_Project.Model;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Graduation_Project.Server
 {
@@ -21,6 +22,7 @@ namespace Graduation_Project.Server
 
         // FLAGS
         // setup handshake flag
+        int timeout_counter = 0;
         byte handshake_signal = Convert.ToByte('~');
         byte[] handshake_flag_bytes = new byte[1];
 
@@ -35,7 +37,7 @@ namespace Graduation_Project.Server
                 live_feed_client.Connect(ep); // connect report client
                 send_handshake_flag_signal(); // initiate a handshake
                 byte[] buffer = new byte[1024]; // data buffer
-                while (exit == false)
+                while (true)
                 {
                     //live_feed_client.Connect(ep);
                     Array.Clear(buffer, 0, buffer.Length); // clear buffer
@@ -63,13 +65,17 @@ namespace Graduation_Project.Server
                                 break;
 
                             case '\0': // no transmission
-                                // Console.WriteLine("Not connected");
-                                // send_handshake_flag_signal(); // recover connection
+                                /*
+                                if (timeout_counter < 500)
+                                    timeout_counter += 1;
+                                else
+                                    timeout_counter = 0;
+                                    send_handshake_flag_signal(); // proceeding transmission
+                                */
                                 break;
 
                             default:
                                 Console.WriteLine("Corrupted transmission!!");
-                                send_handshake_flag_signal(); // proceeding transmission
                                 break;
                         }
                     }
@@ -78,7 +84,7 @@ namespace Graduation_Project.Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Server Error:" + ex.StackTrace);
+                Console.WriteLine("Inbound UDP Error:" + ex.StackTrace);
             }
             #endregion
         }
@@ -106,7 +112,6 @@ namespace Graduation_Project.Server
             {
                 Console.WriteLine("DATA CORRUPTION OCCURED: " + Encoding.Default.GetChars(message_buffer) + "\nError: " + ex);
             }
-            send_handshake_flag_signal();
         }
         public void Close()
         {

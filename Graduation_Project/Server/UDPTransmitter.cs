@@ -36,14 +36,14 @@ namespace Graduation_Project.Server
                 live_feed_client.Connect(ep); // connect report client
 
                 byte[] buffer; // data buffer
-                while (exit == false)
+                while (true)
                 {
                     live_feed_client.Connect(ep);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Server Error:" + ex.StackTrace);
+                Console.WriteLine("Outbound UDP Error:" + ex.StackTrace);
             }
             #endregion
         }
