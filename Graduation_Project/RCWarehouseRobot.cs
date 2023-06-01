@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Graduation_Project
 {
-    public partial class Form1 : Form
+    public partial class RCWarehouseRobot : Form
     {
         // distance (ultrasonic sesnor) declarations
         int obsticleStopDistance = 35; // cm
@@ -57,10 +57,10 @@ namespace Graduation_Project
 
 
         Robot myRobot = new Robot();
-        UDPReceiver myUDPTransmitter = new UDPReceiver();
-        UDPTransmitter myUDPTransmitter2 = new UDPTransmitter();
+        UDPReceiver myUDPReceiver = new UDPReceiver();
+        UDPTransmitter myUDPTransmitter = new UDPTransmitter();
 
-        public Form1()
+        public RCWarehouseRobot()
         {
             InitializeComponent();
             // enable unloaded pwm
@@ -69,23 +69,29 @@ namespace Graduation_Project
             myRobot.left_motor_pwm = 0;
             myRobot.right_motor_pwm = 0;
             // Setup Robot Server capabilities for Transmitter
-            myUDPTransmitter.robotsArray = new Robot[1];
-            myUDPTransmitter.robotsArray[0] = myRobot;
+            myUDPReceiver.robotsArray = new Robot[1];
+            myUDPReceiver.robotsArray[0] = myRobot;
             // Starting transmission
-            Thread thread0 = new Thread(
+            Thread TCPServerThread = new Thread(
                 new ThreadStart(TCPServer.Start));
-            thread0.IsBackground = true;
-            thread0.Start();
-            
-            Thread thread = new Thread(
-                new ThreadStart(myUDPTransmitter2.Start));
-            thread.IsBackground = true;
-            thread.Start();
-            Thread thread1 = new Thread( 
+            TCPServerThread.IsBackground = true;
+            TCPServerThread.Name = "TCPServerThread";
+            TCPServerThread.Start();
+            Console.WriteLine("Started thread for TCPServer: " + TCPServerThread.ManagedThreadId.ToString());
+
+            Thread UDPTransmitterThread = new Thread(
                 new ThreadStart(myUDPTransmitter.Start));
-            thread1.IsBackground = true;
-            thread1.Start();
-            
+            UDPTransmitterThread.IsBackground = true;
+            UDPTransmitterThread.Name = "UDPTransmitterThread";
+            UDPTransmitterThread.Start();
+            Console.WriteLine("Started thread for UDPTransmitter: " + UDPTransmitterThread.ManagedThreadId.ToString());
+
+            Thread UDPReceiverThread = new Thread( 
+                new ThreadStart(myUDPReceiver.Start));
+            UDPReceiverThread.IsBackground = true;
+            UDPReceiverThread.Name = "UDPReceiverThread";
+            UDPReceiverThread.Start();
+            Console.WriteLine("Started thread for UDPReceiver: " + UDPReceiverThread.ManagedThreadId.ToString());
 
             Controller_toggle.Checked = false;
         }
@@ -215,9 +221,6 @@ namespace Graduation_Project
         {
             // Servo scan function, SCANS if active
             if (scanner_mode.Checked) servo_scan_movement();
-            // update motor controller labels
-            Left_wheel_value.Text = left_wheel.ToString();
-            Right_wheel_value.Text = right_wheel.ToString();
             // UPDATING TEXTBOXES
             // display distance value
             distance_textBox.Text = Convert.ToString(myRobot.distance);
@@ -252,7 +255,7 @@ namespace Graduation_Project
                 ){
                 // write values to robot
                 myRobot.write_values(
-                    myUDPTransmitter2,
+                    myUDPTransmitter,
                     right_wheel,
                     left_wheel,
                     xServo_angle,
@@ -272,7 +275,7 @@ namespace Graduation_Project
                 right_wheel = 0;
                 left_wheel = 0;
                 myRobot.write_values(
-                    myUDPTransmitter2,
+                    myUDPTransmitter,
                     right_wheel,
                     left_wheel,
                     xServo_angle,
@@ -291,7 +294,7 @@ namespace Graduation_Project
             if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
 
             myRobot.write_values(
-                    myUDPTransmitter2,
+                    myUDPTransmitter,
                     right_wheel,
                     left_wheel,
                     Convert.ToInt32(new_xServo_angle_numericUpDown.Value),
@@ -302,7 +305,7 @@ namespace Graduation_Project
         private void new_wheel_motors_button_Click(object sender, EventArgs e)
         {
             myRobot.write_values(
-                    myUDPTransmitter2,
+                    myUDPTransmitter,
                     Convert.ToInt32(new_right_motor_pwm_numericUpDown.Value),
                     Convert.ToInt32(new_left_motor_pwm_numericUpDown.Value),
                     xServo_angle,
@@ -328,7 +331,7 @@ namespace Graduation_Project
             if (collisionPreventionToggle.Checked) moving_direction_alertness(); // clossion safety override
 
             myRobot.write_values(
-                    myUDPTransmitter2,
+                    myUDPTransmitter,
                     right_wheel,
                     left_wheel,
                     xServo_angle,
