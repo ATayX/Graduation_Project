@@ -55,7 +55,6 @@
     <Compile Include="Model\Robot.cs" />
     <Compile Include="Server\TCPServer.cs" />
     <Compile Include="Server\UDPReceiver.cs" />
-    <Compile Include="Server\TCPTransmitter.cs" />
     <Compile Include="Server\UDPTransmitter.cs" />
     <Compile Include="Server\USBTransmitter.cs" />
     <Compile Include="Program.cs" />

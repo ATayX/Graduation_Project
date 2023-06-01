@@ -63,8 +63,8 @@ namespace Graduation_Project.Server
                                 break;
 
                             case '\0': // no transmission
-                                //Console.WriteLine("Not connected");
-                                //send_handshake_flag_signal(); // recover connection
+                                // Console.WriteLine("Not connected");
+                                // send_handshake_flag_signal(); // recover connection
                                 break;
 
                             default:
