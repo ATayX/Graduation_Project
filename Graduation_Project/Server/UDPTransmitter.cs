@@ -67,7 +67,7 @@ namespace Graduation_Project.Server
                 else if (left_wheel <= 0) Wheels_Buff[4] = (byte)(left_wheel * -1);
                 Wheels_Buff[5] = (byte)Xservo_val;
                 Wheels_Buff[6] = (byte)Yservo_val;
-                live_feed_client.SendAsync(Wheels_Buff, Wheels_Buff.Length - 1);
+                live_feed_client.SendAsync(Wheels_Buff, Wheels_Buff.Length);
             }
             catch (Exception ex)
             {

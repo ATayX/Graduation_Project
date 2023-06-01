@@ -13,7 +13,7 @@ namespace Graduation_Project
         // servo values
         int servo_angle_step = 5; // degrees
         static int xServo_center = 84; // degrees
-        static int yServo_center = 99; // degrees
+        static int yServo_center = 90; // degrees
 
         int xServo_angle = xServo_center;
         int yServo_angle = yServo_center;
