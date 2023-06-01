@@ -66,8 +66,8 @@ namespace Graduation_Project
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.new_xServo_angle_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.new_yServo_angle_numericUpDown)).BeginInit();
@@ -77,8 +77,8 @@ namespace Graduation_Project
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -394,7 +394,7 @@ namespace Graduation_Project
             // 
             // left_motor_line_speed_textBox
             // 
-            this.left_motor_line_speed_textBox.Location = new System.Drawing.Point(339, 256);
+            this.left_motor_line_speed_textBox.Location = new System.Drawing.Point(342, 253);
             this.left_motor_line_speed_textBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.left_motor_line_speed_textBox.Name = "left_motor_line_speed_textBox";
             this.left_motor_line_speed_textBox.Size = new System.Drawing.Size(216, 26);
@@ -411,7 +411,7 @@ namespace Graduation_Project
             // 
             // right_motor_line_speed_textBox
             // 
-            this.right_motor_line_speed_textBox.Location = new System.Drawing.Point(339, 221);
+            this.right_motor_line_speed_textBox.Location = new System.Drawing.Point(342, 220);
             this.right_motor_line_speed_textBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.right_motor_line_speed_textBox.Name = "right_motor_line_speed_textBox";
             this.right_motor_line_speed_textBox.Size = new System.Drawing.Size(216, 26);
@@ -480,6 +480,17 @@ namespace Graduation_Project
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Manual controls";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.groupBox5);
+            this.groupBox6.Controls.Add(this.Controller_toggle);
+            this.groupBox6.Location = new System.Drawing.Point(955, 32);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(361, 323);
+            this.groupBox6.TabIndex = 43;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "ASWD manual control";
+            // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.unloadedPwmRadioButton);
@@ -491,17 +502,6 @@ namespace Graduation_Project
             this.groupBox5.TabIndex = 42;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Motor PWM modes";
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.groupBox5);
-            this.groupBox6.Controls.Add(this.Controller_toggle);
-            this.groupBox6.Location = new System.Drawing.Point(955, 32);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(361, 323);
-            this.groupBox6.TabIndex = 43;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "ASWD manual control";
             // 
             // groupBox7
             // 
@@ -537,10 +537,10 @@ namespace Graduation_Project
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.ResumeLayout(false);
