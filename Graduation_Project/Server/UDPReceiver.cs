@@ -35,7 +35,7 @@ namespace Graduation_Project.Server
             {
                 // setup UDP connection
                 live_feed_client.Connect(ep); // connect report client
-                send_handshake_flag_signal(); // initiate a handshake
+                send_handshake_flag_signal(); // enable robot comms
                 byte[] buffer = new byte[1024]; // data buffer
                 while (true)
                 {
@@ -55,11 +55,7 @@ namespace Graduation_Project.Server
                     {
                         //Console.WriteLine(Encoding.Default.GetChars(buffer));
                         switch (received_prefix)
-                        {
-                            case '~': // prefix handshake
-                                send_handshake_flag_signal();
-                                break;
-                            
+                        {   
                             case 'R': // prefix report
                                 report_message_handler(buffer);
                                 break;
