@@ -53,10 +53,10 @@
       <DependentUpon>RCWarehouseRobot.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Robot.cs" />
-    <Compile Include="Server\TCPServer.cs" />
-    <Compile Include="Server\UDPReceiver.cs" />
-    <Compile Include="Server\UDPTransmitter.cs" />
-    <Compile Include="Server\USBTransmitter.cs" />
+    <Compile Include="Comms\TCPServer.cs" />
+    <Compile Include="Comms\UDPReceiver.cs" />
+    <Compile Include="Comms\UDPTransmitter.cs" />
+    <Compile Include="Comms\USBTransmitter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="RCWarehouseRobot.resx">
