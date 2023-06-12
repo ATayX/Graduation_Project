@@ -326,9 +326,9 @@ namespace Graduation_Project
             this.scanner_mode.Location = new System.Drawing.Point(33, 94);
             this.scanner_mode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.scanner_mode.Name = "scanner_mode";
-            this.scanner_mode.Size = new System.Drawing.Size(194, 24);
+            this.scanner_mode.Size = new System.Drawing.Size(184, 24);
             this.scanner_mode.TabIndex = 29;
-            this.scanner_mode.Text = "Servo_Scanner_mode";
+            this.scanner_mode.Text = "Servo Scanner mode";
             this.scanner_mode.UseVisualStyleBackColor = true;
             this.scanner_mode.CheckedChanged += new System.EventHandler(this.scanner_mode_CheckedChanged);
             // 
@@ -525,7 +525,7 @@ namespace Graduation_Project
             this.Controls.Add(this.label8);
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "RCWarehouseRobot";
-            this.Text = "Form1";
+            this.Text = "RC Warehouse Robot Control";
             ((System.ComponentModel.ISupportInitialize)(this.new_xServo_angle_numericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.new_yServo_angle_numericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.new_left_motor_pwm_numericUpDown)).EndInit();
